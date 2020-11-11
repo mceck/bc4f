@@ -87,16 +87,15 @@ class _LoginBodyState extends State<LoginBody> {
         }
       });
     } else {
-      auth.signup(_emailCtrl.text, _passwdCtrl.text).then((success) {
-        print(success);
-        if (!success)
-          setState(() {
-            _authError = 'Email già registrata';
-            _loading = false;
-          });
-        else
-          loading = false;
-      });
+      auth
+          .signupWithEmailAndPassword(_emailCtrl.text, _passwdCtrl.text)
+          .then((_) => log.info('signup success'))
+          .catchError(
+            (err) => setState(() {
+              _authError = 'Email già registrata';
+              _loading = false;
+            }),
+          );
     }
   }
 
