@@ -11,7 +11,6 @@ class Auth with ChangeNotifier {
 
   void setUser(User u) {
     user = u;
-    notifyListeners();
   }
 
   Future<void> _login(Future<UserCredential> Function() loginFunc) async {

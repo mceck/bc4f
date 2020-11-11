@@ -37,11 +37,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   color: primaryColor,
                 ),
                 onPressed: () {
-                  setState(() {
-                    _mode = _mode == LoginMode.Login
-                        ? LoginMode.Signup
-                        : LoginMode.Login;
-                  });
+                  onSetMode(_mode == LoginMode.Login
+                      ? LoginMode.Signup
+                      : LoginMode.Login);
                 })
           ],
         ),
