@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bc4f/screens/login/login.dart';
@@ -29,7 +30,8 @@ class _LoginBodyState extends State<LoginBody> {
 
   @override
   void didChangeDependencies() {
-    AppStatus().authStorage.readAll().then((keyStore) {
+    // autologin with mobile
+    AppStatus().authStorage?.readAll()?.then((keyStore) {
       if (keyStore != null) {
         final email = keyStore[KEYSTORE_EMAIL] ?? '';
         final passwd = keyStore[KEYSTORE_PASSWORD] ?? '';
@@ -62,38 +64,39 @@ class _LoginBodyState extends State<LoginBody> {
   set rememberMe(bool r) => setState(() => _rememberMe = r);
   bool get rememberMe => _rememberMe;
 
-  void _sendForm(Auth auth) {
+  void _sendForm() {
     _setAllDirty();
     if (!_formKey.currentState.validate()) return;
     loading = true;
+    final auth = Provider.of<Auth>(context, listen: false);
     if (widget.mode == LoginMode.Login) {
       //login
       final email = _emailCtrl.text.trim();
       final passwd = _passwdCtrl.text;
       auth.loginWithEmailAndPassword(email, passwd).then((success) {
         loading = false;
-        if (rememberMe) {
-          AppStatus().authStorage.write(
+        if (rememberMe && !kIsWeb) {
+          AppStatus().authStorage?.write(
                 key: KEYSTORE_EMAIL,
                 value: email,
               );
-          AppStatus().authStorage.write(
+          AppStatus().authStorage?.write(
                 key: KEYSTORE_PASSWORD,
                 value: passwd,
               );
         }
       });
     } else {
-      // auth.signup(_emailCtrl.text, _passwdCtrl.text).then((success) {
-      //   print(success);
-      //   if (!success)
-      //     setState(() {
-      //       _authError = 'Email già registrata';
-      //       _loading = false;
-      //     });
-      //   else
-      //     loading = false;
-      // });
+      auth.signup(_emailCtrl.text, _passwdCtrl.text).then((success) {
+        print(success);
+        if (!success)
+          setState(() {
+            _authError = 'Email già registrata';
+            _loading = false;
+          });
+        else
+          loading = false;
+      });
     }
   }
 
@@ -117,7 +120,6 @@ class _LoginBodyState extends State<LoginBody> {
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
-    final auth = Provider.of<Auth>(context);
 
     String _validate(String id, String value) {
       if (!_dirty[id]) return null;
@@ -169,7 +171,7 @@ class _LoginBodyState extends State<LoginBody> {
                       validator: (value) => _validate('password', value),
                     ),
                     SizedBox(height: 30),
-                    if (widget.mode == LoginMode.Login)
+                    if (widget.mode == LoginMode.Login && !kIsWeb)
                       CheckboxListTile(
                           controlAffinity: ListTileControlAffinity.leading,
                           title: Text('Remember me'),
@@ -181,7 +183,7 @@ class _LoginBodyState extends State<LoginBody> {
                     RaisedButton(
                       color: primaryColor,
                       textColor: Colors.white,
-                      onPressed: () => _sendForm(auth),
+                      onPressed: _sendForm,
                       child: Icon(Icons.send),
                     ),
                     SizedBox(height: 30),

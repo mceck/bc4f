@@ -40,6 +40,11 @@ class Auth with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> signupWithEmailAndPassword(String email, String password) async {
+    await FirebaseService.signupWithEmailAndPassword(email, password);
+    notifyListeners();
+  }
+
   Future<void> logout() async {
     await FirebaseService.logout();
     user = null;

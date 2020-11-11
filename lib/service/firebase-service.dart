@@ -7,6 +7,12 @@ class FirebaseService {
         .signInWithEmailAndPassword(email: email, password: password);
   }
 
+  static Future<UserCredential> signupWithEmailAndPassword(
+      String email, String password) {
+    // TODO implement
+    throw UnimplementedError();
+  }
+
   static Future<void> logout() {
     return FirebaseAuth.instance.signOut();
   }

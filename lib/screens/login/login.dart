@@ -23,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/login',
+      // initialRoute: '/login',
       home: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,
