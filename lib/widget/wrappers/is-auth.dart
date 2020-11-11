@@ -1,7 +1,6 @@
+import 'package:bc4f/utils/app-status.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:provider/provider.dart';
-import 'package:bc4f/provider/auth.dart';
 import 'package:bc4f/screens/login/login.dart';
 import 'package:bc4f/utils/logger.dart';
 
@@ -19,13 +18,12 @@ class _IsAuthState extends State<IsAuth> {
 
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<Auth>(context, listen: false);
     return StreamBuilder<User>(
         stream: authStream,
         builder: (ctx, snapshot) {
           log.info('auth changed ${snapshot.data}');
           if (snapshot.hasData) {
-            auth.setUser(snapshot.data);
+            AppStatus().loggedUser = snapshot.data;
             return widget.child;
           }
           return LoginScreen();

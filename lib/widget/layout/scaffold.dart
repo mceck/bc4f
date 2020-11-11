@@ -1,30 +1,33 @@
+import 'package:bc4f/widget/layout/bottom-navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:bc4f/widget/layout/appbar.dart';
 import 'package:bc4f/utils/logger.dart';
 import 'package:bc4f/widget/layout/drawer.dart';
 
 class Bc4fScaffold extends StatelessWidget {
-  final Widget title;
   final Widget body;
   final Widget floatAction;
-  final List<Widget> actions;
+  final Widget bottomNavBar;
+  final PreferredSizeWidget appBar;
 
-  const Bc4fScaffold(
-      {Key key, this.title, this.body, this.actions, this.floatAction})
-      : super(key: key);
+  const Bc4fScaffold({
+    Key key,
+    this.body,
+    this.floatAction,
+    this.bottomNavBar,
+    this.appBar,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      endDrawer: Bc4fDrawer(),
-      appBar: Bc4fAppBar(
-        title: title,
-        actions: actions,
-      ),
+      drawer: Bc4fDrawer(),
+      appBar: appBar ?? Bc4fAppBar(title: Text('BC4F')),
       body: DoubleBackPop(
-        child: body,
+        child: SafeArea(child: body),
       ),
       floatingActionButton: floatAction,
+      bottomNavigationBar: bottomNavBar ?? Bc4fBottomNavbar(),
     );
   }
 }

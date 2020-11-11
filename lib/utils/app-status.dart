@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -9,6 +10,8 @@ class AppStatus {
   final navKey = GlobalKey<NavigatorState>();
   final authStorage = kIsWeb ? null : FlutterSecureStorage();
   PrintAppender consoleLog = PrintAppender(formatter: LogPrinter());
+
+  User loggedUser;
 
   static final AppStatus _singleton = AppStatus._internal();
 

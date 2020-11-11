@@ -4,13 +4,13 @@ part 'tag.g.dart';
 
 @JsonSerializable()
 class Tag {
-  String id;
+  String uid;
   String tag;
   @JsonKey(toJson: _TagConv.colorToJson, fromJson: _TagConv.colorFromJson)
   Color color;
 
   Tag({
-    this.id,
+    this.uid,
     this.tag,
     this.color,
   });

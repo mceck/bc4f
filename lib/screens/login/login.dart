@@ -19,7 +19,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
-    // final auth = Provider.of<Auth>(context, listen: false);
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
