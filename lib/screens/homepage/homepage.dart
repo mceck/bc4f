@@ -1,3 +1,4 @@
+import 'package:bc4f/widget/layout/scaffold.dart';
 import 'package:flutter/material.dart';
 
 class HomepageScreen extends StatefulWidget {
@@ -10,6 +11,9 @@ class HomepageScreen extends StatefulWidget {
 class _HomepageScreenState extends State<HomepageScreen> {
   @override
   Widget build(BuildContext context) {
-    return Text('Not implemented');
+    return Bc4fScaffold(
+      title: Text('Homepage'),
+      body: Center(child: Text('Homepage')),
+    );
   }
 }
