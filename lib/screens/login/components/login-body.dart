@@ -1,0 +1,215 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:bc4f/screens/login/login.dart';
+import 'package:bc4f/provider/auth.dart';
+import 'package:bc4f/utils/app-status.dart';
+import 'package:bc4f/utils/constants.dart';
+import 'package:bc4f/utils/logger.dart';
+
+class LoginBody extends StatefulWidget {
+  static const route = '/login';
+
+  final LoginMode mode;
+  final void Function(LoginMode) onSetMode;
+
+  const LoginBody({Key key, this.mode, this.onSetMode}) : super(key: key);
+
+  @override
+  _LoginBodyState createState() => _LoginBodyState();
+}
+
+class _LoginBodyState extends State<LoginBody> {
+  final _formKey = GlobalKey<FormState>();
+  final _emailCtrl = TextEditingController();
+  final _passwdCtrl = TextEditingController();
+  final Map<String, bool> _dirty = {'email': false, 'password': false};
+  String _authError = '';
+  bool _loading = false;
+  bool _rememberMe = false;
+
+  @override
+  void didChangeDependencies() {
+    AppStatus().authStorage.readAll().then((keyStore) {
+      if (keyStore != null) {
+        final email = keyStore[KEYSTORE_EMAIL] ?? '';
+        final passwd = keyStore[KEYSTORE_PASSWORD] ?? '';
+        if (email.isNotEmpty && passwd.isNotEmpty) {
+          log.info('autologin $email');
+          loading = true;
+          Provider.of<Auth>(context, listen: false)
+              .loginWithEmailAndPassword(email, passwd)
+              .catchError((error) {
+            setState(() {
+              _authError = 'Email o password errata';
+              _loading = false;
+            });
+          });
+        }
+      }
+    });
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    _emailCtrl.dispose();
+    _passwdCtrl.dispose();
+    super.dispose();
+  }
+
+  set loading(bool l) => setState(() => _loading = l);
+  bool get loading => _loading;
+  set rememberMe(bool r) => setState(() => _rememberMe = r);
+  bool get rememberMe => _rememberMe;
+
+  void _sendForm(Auth auth) {
+    _setAllDirty();
+    if (!_formKey.currentState.validate()) return;
+    loading = true;
+    if (widget.mode == LoginMode.Login) {
+      //login
+      final email = _emailCtrl.text.trim();
+      final passwd = _passwdCtrl.text;
+      auth.loginWithEmailAndPassword(email, passwd).then((success) {
+        loading = false;
+        if (rememberMe) {
+          AppStatus().authStorage.write(
+                key: KEYSTORE_EMAIL,
+                value: email,
+              );
+          AppStatus().authStorage.write(
+                key: KEYSTORE_PASSWORD,
+                value: passwd,
+              );
+        }
+      });
+    } else {
+      // auth.signup(_emailCtrl.text, _passwdCtrl.text).then((success) {
+      //   print(success);
+      //   if (!success)
+      //     setState(() {
+      //       _authError = 'Email già registrata';
+      //       _loading = false;
+      //     });
+      //   else
+      //     loading = false;
+      // });
+    }
+  }
+
+  void _setAllDirty() {
+    _dirty.keys.forEach((key) => _dirty[key] = true);
+  }
+
+  void _setDirty(String id, String value) {
+    if (value.isNotEmpty && !_dirty[id]) {
+      _dirty[id] = true;
+      _formKey.currentState.validate();
+    }
+  }
+
+  void resetForm() {
+    _dirty.keys.forEach((key) => _dirty[key] = false);
+    _emailCtrl.text = '';
+    _passwdCtrl.text = '';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).primaryColor;
+    final auth = Provider.of<Auth>(context);
+
+    String _validate(String id, String value) {
+      if (!_dirty[id]) return null;
+      switch (id) {
+        case 'email':
+          if (value.isEmpty) return 'Inserisci un indirizzo email';
+          final emailRegEx = RegExp(
+              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+          if (!emailRegEx.hasMatch(value))
+            return 'Inserisci un indirizzo email valido';
+          break;
+        case 'password':
+          if (value.isEmpty) return 'Inserisci una password';
+          if (value.length < 6) return 'Inserisci una password più lunga';
+          break;
+        default:
+      }
+
+      return null;
+    }
+
+    return Center(
+      child: loading
+          ? CircularProgressIndicator()
+          : SizedBox(
+              width: 350,
+              height: 500,
+              child: Form(
+                autovalidateMode: AutovalidateMode.always,
+                key: _formKey,
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      widget.mode == LoginMode.Login ? 'Login' : 'Registrati',
+                      style: TextStyle(color: Colors.grey[800], fontSize: 20),
+                    ),
+                    TextFormField(
+                      onFieldSubmitted: (value) => _setDirty('email', value),
+                      controller: _emailCtrl,
+                      decoration: InputDecoration(labelText: 'e-mail'),
+                      validator: (value) => _validate('email', value),
+                    ),
+                    TextFormField(
+                      onFieldSubmitted: (value) => _setDirty('password', value),
+                      controller: _passwdCtrl,
+                      decoration: InputDecoration(labelText: 'password'),
+                      obscureText: true,
+                      //onFieldSubmitted: (value) => _sendForm(auth),
+                      validator: (value) => _validate('password', value),
+                    ),
+                    SizedBox(height: 30),
+                    if (widget.mode == LoginMode.Login)
+                      CheckboxListTile(
+                          controlAffinity: ListTileControlAffinity.leading,
+                          title: Text('Remember me'),
+                          value: rememberMe,
+                          onChanged: (val) {
+                            rememberMe = val;
+                          }),
+                    SizedBox(height: 30),
+                    RaisedButton(
+                      color: primaryColor,
+                      textColor: Colors.white,
+                      onPressed: () => _sendForm(auth),
+                      child: Icon(Icons.send),
+                    ),
+                    SizedBox(height: 30),
+                    FlatButton(
+                      onPressed: () {
+                        setState(() {
+                          if (widget.mode == LoginMode.Login)
+                            widget.onSetMode(LoginMode.Signup);
+                          else
+                            widget.onSetMode(LoginMode.Login);
+                          resetForm();
+                        });
+                      },
+                      child: Text(
+                        widget.mode == LoginMode.Login
+                            ? 'Registrati'
+                            : 'Signin',
+                        style: TextStyle(color: primaryColor),
+                      ),
+                    ),
+                    Text(
+                      _authError,
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+    );
+  }
+}
