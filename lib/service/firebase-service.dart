@@ -6,4 +6,8 @@ class FirebaseService {
     return FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password);
   }
+
+  static Future<void> logout() {
+    return FirebaseAuth.instance.signOut();
+  }
 }
