@@ -9,10 +9,9 @@ part of 'group.dart';
 BarcodeGroup _$BarcodeGroupFromJson(Map<String, dynamic> json) {
   return BarcodeGroup(
     barcodes:
-        _GroupConv.groupJsonToList(json['barcodes'] as Map<String, dynamic>) ??
-            [],
+        (json['barcodes'] as List)?.map((e) => e as String)?.toList() ?? [],
     description: json['description'] as String,
-    id: json['id'] as String,
+    uid: json['uid'] as String,
     imgUrl: json['imgUrl'] as String,
     name: json['name'] as String,
     order: json['order'] as int ?? 0,
@@ -21,8 +20,8 @@ BarcodeGroup _$BarcodeGroupFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$BarcodeGroupToJson(BarcodeGroup instance) =>
     <String, dynamic>{
-      'id': instance.id,
-      'barcodes': _GroupConv.groupListToJson(instance.barcodes),
+      'uid': instance.uid,
+      'barcodes': instance.barcodes,
       'name': instance.name,
       'description': instance.description,
       'imgUrl': instance.imgUrl,

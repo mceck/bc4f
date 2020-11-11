@@ -1,8 +1,7 @@
+import 'package:bc4f/service/firebase-service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:bc4f/screens/login/login.dart';
-import 'package:bc4f/provider/auth.dart';
 import 'package:bc4f/utils/app-status.dart';
 import 'package:bc4f/utils/constants.dart';
 import 'package:bc4f/utils/logger.dart';
@@ -38,8 +37,7 @@ class _LoginBodyState extends State<LoginBody> {
         if (email.isNotEmpty && passwd.isNotEmpty) {
           log.info('autologin $email');
           loading = true;
-          Provider.of<Auth>(context, listen: false)
-              .loginWithEmailAndPassword(email, passwd)
+          FirebaseService.loginWithEmailAndPassword(email, passwd)
               .catchError((error) {
             setState(() {
               _authError = 'Email o password errata';
@@ -68,12 +66,11 @@ class _LoginBodyState extends State<LoginBody> {
     _setAllDirty();
     if (!_formKey.currentState.validate()) return;
     loading = true;
-    final auth = Provider.of<Auth>(context, listen: false);
     if (widget.mode == LoginMode.Login) {
       //login
       final email = _emailCtrl.text.trim();
       final passwd = _passwdCtrl.text;
-      auth.loginWithEmailAndPassword(email, passwd).then((success) {
+      FirebaseService.loginWithEmailAndPassword(email, passwd).then((success) {
         loading = false;
         if (rememberMe && !kIsWeb) {
           AppStatus().authStorage?.write(
@@ -87,8 +84,8 @@ class _LoginBodyState extends State<LoginBody> {
         }
       });
     } else {
-      auth
-          .signupWithEmailAndPassword(_emailCtrl.text, _passwdCtrl.text)
+      FirebaseService.signupWithEmailAndPassword(
+              _emailCtrl.text, _passwdCtrl.text)
           .then((_) => log.info('signup success'))
           .catchError(
             (err) => setState(() {

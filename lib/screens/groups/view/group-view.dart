@@ -1,3 +1,4 @@
+import 'package:bc4f/widget/layout/scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:bc4f/model/group.dart';
 
@@ -15,6 +16,8 @@ class GroupView extends StatefulWidget {
 class _GroupViewState extends State<GroupView> {
   @override
   Widget build(BuildContext context) {
-    return Text('Not implemented');
+    return Bc4fScaffold(
+      body: Center(child: Text('Group view')),
+    );
   }
 }

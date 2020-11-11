@@ -4,7 +4,7 @@ part 'barcode.g.dart';
 
 @JsonSerializable()
 class Barcode {
-  String id;
+  String uid;
   String code;
   @JsonKey(
     fromJson: _BarcodeConv.bcTypeFromJson,
@@ -24,7 +24,7 @@ class Barcode {
     this.code,
     this.description,
     this.type,
-    this.id,
+    this.uid,
     this.imgUrl,
     this.name,
     this.tags,
