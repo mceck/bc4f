@@ -11,8 +11,7 @@ Barcode _$BarcodeFromJson(Map<String, dynamic> json) {
     code: json['code'] as String,
     group: json['group'] as String,
     description: json['description'] as String,
-    type: _BarcodeConv.bcTypeFromJson(json['type'] as String) ??
-        bcLib.BarcodeType.CodeEAN13,
+    type: _BarcodeConv.bcTypeFromJson(json['type'] as String),
     uid: json['uid'] as String,
     imgUrl: json['imgUrl'] as String,
     name: json['name'] as String,

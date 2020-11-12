@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bc4f/model/barcode.dart';
 import 'package:bc4f/model/group.dart';
 import 'package:bc4f/model/tag.dart';
+import 'package:bc4f/screens/barcodes/form/barcode-form.dart';
 import 'package:bc4f/screens/groups/detail/components/group-grid.dart';
 import 'package:bc4f/screens/groups/form/group-form.dart';
 import 'package:bc4f/service/barcode-service.dart';
@@ -73,7 +74,11 @@ class _GroupDetailState extends State<GroupDetail> {
         child: Icon(Icons.add),
         onPressed: () {
           log.info('new barcode for group');
-          Navigator.of(context).pushNamed(GroupForm.route);
+          Navigator.of(context).pushNamed(BarcodeForm.route, arguments: {
+            'barcode': Barcode(
+              group: widget.group.uid,
+            )
+          });
         },
       ),
     );

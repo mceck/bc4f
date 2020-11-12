@@ -1,8 +1,10 @@
+import 'package:bc4f/provider/tag-provider.dart';
 import 'package:flutter/material.dart';
 import 'package:bc4f/router/router.dart';
 import 'package:bc4f/widget/wrappers/is-auth.dart';
 import 'package:bc4f/utils/app-status.dart';
 import 'package:bc4f/widget/wrappers/firebase-app.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -26,16 +28,19 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IsAuth(
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        navigatorKey: AppStatus().navKey,
-        title: 'Bc4f',
-        theme: ThemeData(
-          textTheme: TextTheme(subtitle1: TextStyle(fontSize: 18)),
-          primarySwatch: Colors.blue,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
+      child: ChangeNotifierProvider(
+        create: (ctx) => TagProvider(),
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          navigatorKey: AppStatus().navKey,
+          title: 'Bc4f',
+          theme: ThemeData(
+            textTheme: TextTheme(subtitle1: TextStyle(fontSize: 18)),
+            primarySwatch: Colors.blue,
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+          ),
+          onGenerateRoute: Routing.onGenerateRoute,
         ),
-        onGenerateRoute: Routing.onGenerateRoute,
       ),
     );
   }

@@ -9,13 +9,13 @@ part of 'tag.dart';
 Tag _$TagFromJson(Map<String, dynamic> json) {
   return Tag(
     uid: json['uid'] as String,
-    tag: json['tag'] as String,
+    name: json['name'] as String,
     color: _TagConv.colorFromJson(json['color'] as Map<String, dynamic>),
   );
 }
 
 Map<String, dynamic> _$TagToJson(Tag instance) => <String, dynamic>{
       'uid': instance.uid,
-      'tag': instance.tag,
+      'name': instance.name,
       'color': _TagConv.colorToJson(instance.color),
     };

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:bc4f/model/barcode.dart';
 import 'package:bc4f/utils/app-status.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bc4f/utils/logger.dart';
@@ -12,6 +13,16 @@ class BarcodeService {
         .collection('barcode_group')
         .where('user', isEqualTo: useruid)
         .orderBy('order');
+    log.info('collection $collection');
+    return collection.snapshots();
+  }
+
+  static Stream<QuerySnapshot> streamTags() {
+    final useruid = AppStatus().loggedUser.uid;
+    log.info('stream all tags for user $useruid');
+    final collection = FirebaseFirestore.instance
+        .collection('tag')
+        .where('user', isEqualTo: useruid);
     log.info('collection $collection');
     return collection.snapshots();
   }
@@ -36,5 +47,19 @@ class BarcodeService {
 
   static Future<void> deleteBarcode(String uid) {
     return FirebaseFirestore.instance.collection('barcode').doc(uid).delete();
+  }
+
+  static Future<void> saveBarcode(Barcode barcode) {
+    final isNew = (barcode.uid == null);
+    final data = barcode.toJson();
+    DocumentReference doc;
+    if (isNew) {
+      doc = FirebaseFirestore.instance.collection('barcode').doc();
+    } else {
+      doc = FirebaseFirestore.instance.collection('barcode').doc(barcode.uid);
+    }
+    data['user'] = AppStatus().loggedUser.uid;
+    data['uid'] = doc.id;
+    return doc.set(data);
   }
 }

@@ -5,13 +5,13 @@ part 'tag.g.dart';
 @JsonSerializable()
 class Tag {
   String uid;
-  String tag;
+  String name;
   @JsonKey(toJson: _TagConv.colorToJson, fromJson: _TagConv.colorFromJson)
   Color color;
 
   Tag({
     this.uid,
-    this.tag,
+    this.name,
     this.color,
   });
   factory Tag.fromJson(Map<String, dynamic> json) => _$TagFromJson(json);
