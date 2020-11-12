@@ -21,11 +21,11 @@ class Tag {
 class _TagConv {
   static Color colorFromJson(Map<String, dynamic> val) {
     if (val == null) return Colors.white;
-    final r = val['r'];
-    final g = val['g'];
-    final b = val['b'];
-    final opacity = val['opacity'] ?? 1;
-    return Color.fromRGBO(r, g, b, opacity);
+    final r = val['r'] as int;
+    final g = val['g'] as int;
+    final b = val['b'] as int;
+    final opacity = val['opacity'];
+    return Color.fromRGBO(r, g, b, opacity * 1.0);
   }
 
   static Map<String, dynamic> colorToJson(Color color) {
