@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:bc4f/model/barcode.dart';
+import 'package:bc4f/model/tag.dart';
 import 'package:bc4f/utils/app-status.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bc4f/utils/logger.dart';
@@ -25,6 +26,20 @@ class BarcodeService {
         .where('user', isEqualTo: useruid);
     log.info('collection $collection');
     return collection.snapshots();
+  }
+
+  static Future<void> saveTag(Tag tag) {
+    final isNew = (tag.uid == null);
+    final data = tag.toJson();
+    DocumentReference doc;
+    if (isNew) {
+      doc = FirebaseFirestore.instance.collection('tag').doc();
+    } else {
+      doc = FirebaseFirestore.instance.collection('tag').doc(tag.uid);
+    }
+    data['user'] = AppStatus().loggedUser.uid;
+    data['uid'] = doc.id;
+    return doc.set(data);
   }
 
   static Future<void> deleteTag(String uid) async {
