@@ -1,3 +1,6 @@
+import 'package:bc4f/utils/constants.dart';
+import 'package:bc4f/widget/components/barcode-image.dart';
+import 'package:bc4f/widget/layout/scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:bc4f/model/barcode.dart';
 
@@ -13,9 +16,56 @@ class BarcodeView extends StatefulWidget {
   _BarcodeViewState createState() => _BarcodeViewState();
 }
 
-class _BarcodeViewState extends State<BarcodeView> {
+class _BarcodeViewState extends State<BarcodeView>
+    with TickerProviderStateMixin {
+  TabController tabController;
+
+  @override
+  void initState() {
+    tabController = TabController(
+        initialIndex: widget.startIdx,
+        length: widget.barcodes.length,
+        vsync: this);
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    if (tabController != null) tabController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Text('Not implemented');
+    return Bc4fScaffold(
+      body: TabBarView(
+        controller: tabController,
+        children: widget.barcodes
+            .map(
+              (barcode) => Padding(
+                padding: const EdgeInsets.all(kDefaultPadding),
+                child: Column(
+                  children: [
+                    if (barcode.tags != null)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: barcode.tags.map((tag) => Text(tag)).toList(),
+                      ),
+                    Expanded(
+                      child: BarcodeImage(
+                        barcode.code ?? 'null',
+                        barcode.type,
+                        width: MediaQuery.of(context).size.width * 0.9,
+                      ),
+                    ),
+                    Text(barcode.description ?? 'null'),
+                  ],
+                ),
+              ),
+            )
+            .toList(),
+      ),
+    );
   }
 }

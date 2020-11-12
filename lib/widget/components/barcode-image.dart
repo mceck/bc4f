@@ -11,6 +11,9 @@ import 'package:bc4f/utils/fake-html.dart' if (dart.library.html) 'dart:html'
     as html;
 import 'package:bc4f/utils/fake-ui.dart' if (dart.library.html) 'dart:ui' as ui;
 
+const kUndraggableCss =
+    'user-drag: none;user-select: none;-moz-user-select: none;-webkit-user-drag: none;-webkit-user-select: none;-ms-user-select: none;';
+
 class BarcodeImage extends StatefulWidget {
   final String code;
   final BarcodeType barcodeType;
@@ -53,15 +56,17 @@ class _BarcodeImageState extends State<BarcodeImage> {
           src: base64String,
           width: width.toInt(),
           height: height.toInt(),
-        );
+        )..setAttribute('style', kUndraggableCss);
         return element;
       });
       return Container(
         width: widget.width,
         height: widget.height,
         alignment: Alignment.center,
-        child: HtmlElementView(
-          viewType: 'img-svg-$hashCode',
+        child: AbsorbPointer(
+          child: HtmlElementView(
+            viewType: 'img-svg-$hashCode',
+          ),
         ),
       );
     }
