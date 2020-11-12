@@ -22,6 +22,14 @@ class _IsAuthState extends State<IsAuth> {
         stream: authStream,
         builder: (ctx, snapshot) {
           log.info('auth changed ${snapshot.data}');
+          if (snapshot.connectionState == ConnectionState.waiting)
+            return MaterialApp(
+              home: Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            );
           if (snapshot.hasData) {
             AppStatus().loggedUser = snapshot.data;
             return widget.child;

@@ -1,9 +1,12 @@
+import 'package:bc4f/model/group.dart';
+import 'package:bc4f/model/tag.dart';
+import 'package:bc4f/widget/components/tags.dart';
 import 'package:bc4f/widget/layout/bottom-navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:bc4f/utils/logger.dart';
 import 'package:bc4f/widget/layout/drawer.dart';
 
-class Bc4fScaffold extends StatelessWidget {
+class Bc4fScaffold extends StatefulWidget {
   final Widget body;
   final Widget floatAction;
   final Widget bottomNavBar;
@@ -11,9 +14,12 @@ class Bc4fScaffold extends StatelessWidget {
   final void Function() actionNew;
   final void Function() actionEdit;
   final void Function(String search) onSearch;
+  final void Function(List<String> filter) onTagFilterChange;
+  final void Function(List<String> filter) onGroupFilterChange;
   final String title;
   final String subtitle;
   final Widget icon;
+  final List<String> tagFilters;
 
   const Bc4fScaffold({
     Key key,
@@ -27,8 +33,16 @@ class Bc4fScaffold extends StatelessWidget {
     this.title = 'BC4F',
     this.subtitle = 'Barcodes everyware',
     this.icon,
+    this.onTagFilterChange,
+    this.onGroupFilterChange,
+    this.tagFilters,
   }) : super(key: key);
 
+  @override
+  _Bc4fScaffoldState createState() => _Bc4fScaffoldState();
+}
+
+class _Bc4fScaffoldState extends State<Bc4fScaffold> {
   PreferredSizeWidget buildAppBar(BuildContext context) {
     return AppBar(
       toolbarHeight: MediaQuery.of(context).size.height * 0.3,
@@ -37,37 +51,43 @@ class Bc4fScaffold extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (icon != null) icon,
-              Text(title),
+              if (widget.icon != null) widget.icon,
+              Text(widget.title),
             ],
           ),
-          if (subtitle != null)
+          if (widget.subtitle != null)
             Text(
-              subtitle,
+              widget.subtitle,
               style: Theme.of(context)
                   .textTheme
                   .subtitle2
                   .copyWith(color: Colors.white),
             ),
-          if (onSearch != null)
+          if (widget.onGroupFilterChange != null) Text('Group filters'),
+          if (widget.onTagFilterChange != null)
+            EditableTagList(
+              onTagFilterChange: widget.onTagFilterChange,
+              tags: widget.tagFilters,
+            ),
+          if (widget.onSearch != null)
             TextField(
               decoration: InputDecoration(
                 hintText: 'Search...',
               ),
-              onChanged: onSearch,
-            )
+              onChanged: widget.onSearch,
+            ),
         ],
       ),
       actions: [
-        if (actionEdit != null)
+        if (widget.actionEdit != null)
           IconButton(
             icon: Icon(Icons.edit),
-            onPressed: actionEdit,
+            onPressed: widget.actionEdit,
           ),
-        if (actionNew != null)
+        if (widget.actionNew != null)
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: actionNew,
+            onPressed: widget.actionNew,
           ),
       ],
     );
@@ -77,12 +97,12 @@ class Bc4fScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: Bc4fDrawer(),
-      appBar: appBar ?? buildAppBar(context),
+      appBar: widget.appBar ?? buildAppBar(context),
       body: DoubleBackPop(
-        child: SafeArea(child: body),
+        child: SafeArea(child: widget.body),
       ),
-      floatingActionButton: floatAction,
-      bottomNavigationBar: bottomNavBar ?? Bc4fBottomNavbar(),
+      floatingActionButton: widget.floatAction,
+      bottomNavigationBar: widget.bottomNavBar ?? Bc4fBottomNavbar(),
     );
   }
 }

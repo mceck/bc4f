@@ -118,5 +118,29 @@ class Routing {
   }
 
   static PageRoute _getPageRoute(Widget screen, RouteSettings settings) =>
-      MaterialPageRoute(builder: (_) => screen, settings: settings);
+      FadeRoute(screen, settings);
+}
+
+class FadeRoute extends PageRouteBuilder {
+  final Widget page;
+  FadeRoute(this.page, RouteSettings settings)
+      : super(
+          settings: settings,
+          pageBuilder: (
+            BuildContext context,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+          ) =>
+              page,
+          transitionsBuilder: (
+            BuildContext context,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+            Widget child,
+          ) =>
+              FadeTransition(
+            opacity: animation,
+            child: child,
+          ),
+        );
 }

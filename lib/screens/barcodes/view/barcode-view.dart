@@ -1,5 +1,7 @@
+import 'package:bc4f/screens/barcodes/form/barcode-form.dart';
 import 'package:bc4f/utils/constants.dart';
 import 'package:bc4f/widget/components/barcode-image.dart';
+import 'package:bc4f/widget/components/tags.dart';
 import 'package:bc4f/widget/layout/scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:bc4f/model/barcode.dart';
@@ -39,6 +41,10 @@ class _BarcodeViewState extends State<BarcodeView>
   @override
   Widget build(BuildContext context) {
     return Bc4fScaffold(
+      actionEdit: () => Navigator.of(context).pushNamed(
+        BarcodeForm.route,
+        arguments: {'barcode': widget.barcodes[tabController.index]},
+      ),
       body: TabBarView(
         controller: tabController,
         children: widget.barcodes
@@ -47,11 +53,7 @@ class _BarcodeViewState extends State<BarcodeView>
                 padding: const EdgeInsets.all(kDefaultPadding),
                 child: Column(
                   children: [
-                    if (barcode.tags != null)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: barcode.tags.map((tag) => Text(tag)).toList(),
-                      ),
+                    if (barcode.tags != null) TagList(tags: barcode.tags),
                     Expanded(
                       child: BarcodeImage(
                         barcode.code ?? 'null',

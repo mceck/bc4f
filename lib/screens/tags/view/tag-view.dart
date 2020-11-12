@@ -41,7 +41,7 @@ class _TagViewState extends State<TagView> {
                 SearchScreen.route,
                 (route) => false,
                 arguments: {
-                  'tagFilters': [tag]
+                  'tagFilters': [tag.uid]
                 },
               ),
               child: Card(
