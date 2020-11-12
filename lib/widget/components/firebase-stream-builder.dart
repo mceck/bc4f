@@ -6,9 +6,12 @@ class FirebaseQueryBuilder<T> extends StatelessWidget {
   final Widget Function(BuildContext, List<T>) builder;
   final T Function(Map<String, dynamic>) factoryMethod;
 
-  const FirebaseQueryBuilder(
-      {Key key, this.stream, this.builder, this.factoryMethod})
-      : super(key: key);
+  const FirebaseQueryBuilder({
+    Key key,
+    @required this.stream,
+    @required this.builder,
+    @required this.factoryMethod,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

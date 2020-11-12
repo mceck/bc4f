@@ -9,14 +9,13 @@ class Barcode {
   @JsonKey(
     fromJson: _BarcodeConv.bcTypeFromJson,
     toJson: _BarcodeConv.bcTypeToJson,
-    defaultValue: bcLib.BarcodeType.CodeEAN13,
   )
   bcLib.BarcodeType type;
   String group;
   String name;
   String description;
   String imgUrl;
-  @JsonKey(defaultValue: [])
+  @JsonKey(defaultValue: <String>[])
   List<String> tags;
   @JsonKey(defaultValue: 0)
   int order;
@@ -25,12 +24,12 @@ class Barcode {
     this.code,
     this.group,
     this.description,
-    this.type,
+    this.type = bcLib.BarcodeType.CodeEAN13,
     this.uid,
     this.imgUrl,
     this.name,
-    this.tags,
-    this.order,
+    this.tags = const <String>[],
+    this.order = 0,
   });
   factory Barcode.fromJson(Map<String, dynamic> json) =>
       _$BarcodeFromJson(json);
@@ -45,6 +44,6 @@ class _BarcodeConv {
   static bcLib.BarcodeType bcTypeFromJson(String type) {
     return bcLib.BarcodeType.values.firstWhere(
         (t) => t.toString().split('.')[1] == type,
-        orElse: () => null);
+        orElse: () => bcLib.BarcodeType.CodeEAN13);
   }
 }
