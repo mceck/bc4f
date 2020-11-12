@@ -90,6 +90,18 @@ class BarcodeService {
     await FirebaseFirestore.instance.collection('tag').doc(uid).delete();
   }
 
+  static Future<List<Barcode>> getBarcodes() async {
+    final useruid = AppStatus().loggedUser.uid;
+    final result = await FirebaseFirestore.instance
+        .collection('barcode')
+        .where('user', isEqualTo: useruid)
+        .orderBy('group')
+        .orderBy('order')
+        .get();
+    log.info('result $result');
+    return result.docs.map((doc) => Barcode.fromJson(doc.data())).toList();
+  }
+
   static Stream<DocumentSnapshot> streamBarcode(String uid) {
     final result = FirebaseFirestore.instance.collection('barcode').doc(uid);
     log.info('result $result');

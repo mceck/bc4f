@@ -1,6 +1,8 @@
+import 'package:bc4f/provider/tag-provider.dart';
 import 'package:flutter/material.dart';
 import 'package:bc4f/model/barcode.dart';
 import 'package:bc4f/model/tag.dart';
+import 'package:provider/provider.dart';
 
 class TagList extends StatelessWidget {
   final Barcode barcode;
@@ -10,21 +12,18 @@ class TagList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (barcode.tags == null) return Container();
-    final tagList = []; // TODO Provider.of<Tags>(context);
-    // if (tagList.loading)
-    //   return Padding(
-    //     padding: const EdgeInsets.only(left: 10, right: 60),
-    //     child: LinearProgressIndicator(),
-    //   );
+    final tagList = Provider.of<TagProvider>(context).tags;
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
         children: barcode.tags.map(
           (tagId) {
-            final tag = tagList.firstWhere((t) => t.id == tagId);
+            final tag =
+                tagList.firstWhere((t) => t.uid == tagId, orElse: () => null);
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5),
-              child: TagElem(tag: tag),
+              child:
+                  tag == null ? CircularProgressIndicator() : TagElem(tag: tag),
             );
           },
         ).toList(),

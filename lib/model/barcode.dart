@@ -28,9 +28,11 @@ class Barcode {
     this.uid,
     this.imgUrl,
     this.name,
-    this.tags = const <String>[],
+    this.tags,
     this.order = 0,
-  });
+  }) {
+    this.tags = this.tags ?? [];
+  }
   factory Barcode.fromJson(Map<String, dynamic> json) =>
       _$BarcodeFromJson(json);
   Map<String, dynamic> toJson() => _$BarcodeToJson(this);

@@ -1,3 +1,5 @@
+import 'package:bc4f/model/group.dart';
+import 'package:bc4f/model/tag.dart';
 import 'package:bc4f/widget/layout/bottom-navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:bc4f/utils/logger.dart';
@@ -11,6 +13,8 @@ class Bc4fScaffold extends StatelessWidget {
   final void Function() actionNew;
   final void Function() actionEdit;
   final void Function(String search) onSearch;
+  final void Function(List<Tag> search) onTagFilterChange;
+  final void Function(List<BarcodeGroup> search) onGroupFilterChange;
   final String title;
   final String subtitle;
   final Widget icon;
@@ -27,6 +31,8 @@ class Bc4fScaffold extends StatelessWidget {
     this.title = 'BC4F',
     this.subtitle = 'Barcodes everyware',
     this.icon,
+    this.onTagFilterChange,
+    this.onGroupFilterChange,
   }) : super(key: key);
 
   PreferredSizeWidget buildAppBar(BuildContext context) {
@@ -49,13 +55,15 @@ class Bc4fScaffold extends StatelessWidget {
                   .subtitle2
                   .copyWith(color: Colors.white),
             ),
+          if (onGroupFilterChange != null) Text('Group filters'),
+          if (onTagFilterChange != null) Text('TagFilters'),
           if (onSearch != null)
             TextField(
               decoration: InputDecoration(
                 hintText: 'Search...',
               ),
               onChanged: onSearch,
-            )
+            ),
         ],
       ),
       actions: [
