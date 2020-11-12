@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:bc4f/model/barcode.dart';
 import 'package:bc4f/model/group.dart';
-import 'package:bc4f/model/tag.dart';
 import 'package:bc4f/screens/barcodes/form/barcode-form.dart';
 import 'package:bc4f/screens/groups/detail/components/group-grid.dart';
 import 'package:bc4f/screens/groups/form/group-form.dart';
@@ -25,12 +24,11 @@ class GroupDetail extends StatefulWidget {
 }
 
 class _GroupDetailState extends State<GroupDetail> {
-  List<Tag> tagFilters = [];
+  List<String> tagFilters = [];
 
   List<Barcode> filterList(List<Barcode> barcodes) {
     return barcodes
-        .where((bar) =>
-            tagFilters.every((filter) => bar.tags.contains(filter.uid)))
+        .where((bar) => tagFilters.every((filter) => bar.tags.contains(filter)))
         .toList();
   }
 
@@ -45,6 +43,11 @@ class _GroupDetailState extends State<GroupDetail> {
   @override
   Widget build(BuildContext context) {
     return Bc4fScaffold(
+      onTagFilterChange: (filters) {
+        setState(() {
+          tagFilters = filters;
+        });
+      },
       icon: Icon(Icons.group_work),
       title: widget.group.name,
       subtitle: widget.group.description,

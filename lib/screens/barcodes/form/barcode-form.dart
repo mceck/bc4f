@@ -31,8 +31,6 @@ class _BarcodeFormState extends State<BarcodeForm> {
 
   Barcode _barcode;
 
-  Stream tagStream;
-
   @override
   void initState() {
     _barcode = widget.barcode;
@@ -42,7 +40,6 @@ class _BarcodeFormState extends State<BarcodeForm> {
     name = TextEditingController(text: _barcode?.name);
     description = TextEditingController(text: _barcode?.description);
 
-    tagStream = BarcodeService.streamTags();
     super.initState();
   }
 
@@ -136,57 +133,13 @@ class _BarcodeFormState extends State<BarcodeForm> {
               controller: description,
               decoration: InputDecoration(labelText: 'description'),
             ),
-            if (tags.length > 0)
-              FlatButton(
-                onPressed: () {
-                  setState(() {
-                    _barcode.tags.add(tags[0].uid);
-                  });
-                },
-                child: Row(
-                  children: [
-                    Icon(Icons.add),
-                    Text('Aggiungi tag'),
-                  ],
-                ),
-              ),
-            Expanded(
-              child: ListView(
-                children: _barcode.tags
-                    .map(
-                      (tagId) => Row(
-                        children: [
-                          SelectList(
-                            key: ValueKey(tagId),
-                            list: tags.map((t) => t.uid).toList(),
-                            onChanged: (val) {
-                              final idx = _barcode.tags.indexOf(tagId);
-                              if (idx >= 0)
-                                setState(() {
-                                  _barcode.tags[idx] = val;
-                                });
-                            },
-                            value: tagId,
-                            display: (id) => TagElem(
-                                tag: tags.firstWhere((t) => t.uid == id)),
-                            showUnderline: false,
-                            showIcon: false,
-                          ),
-                          IconButton(
-                              icon: Icon(
-                                Icons.cancel,
-                                color: Colors.red,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  _barcode.tags.remove(tagId);
-                                });
-                              }),
-                        ],
-                      ),
-                    )
-                    .toList(),
-              ),
+            EditableTagList(
+              onTagFilterChange: (filter) {
+                setState(() {
+                  _barcode.tags = filter;
+                });
+              },
+              tags: _barcode.tags,
             ),
             RaisedButton(
               onPressed: save,

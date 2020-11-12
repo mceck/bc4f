@@ -4,6 +4,7 @@ import 'package:bc4f/screens/barcodes/form/barcode-form.dart';
 import 'package:bc4f/screens/barcodes/view/barcode-view.dart';
 import 'package:bc4f/service/barcode-service.dart';
 import 'package:bc4f/widget/components/barcode-image.dart';
+import 'package:bc4f/widget/components/tags.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -44,7 +45,12 @@ class BarcodeCard extends StatelessWidget {
                 flex: 1,
                 child: ListTile(
                   title: Text(barcode.code ?? 'null'),
-                  subtitle: Text(barcode.description ?? 'null'),
+                  subtitle: Column(
+                    children: [
+                      Text(barcode.description ?? 'null'),
+                      TagList(tags: barcode.tags),
+                    ],
+                  ),
                 ),
               )
             ],

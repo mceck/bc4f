@@ -15,8 +15,8 @@ class SearchScreen extends StatefulWidget {
   static const route = '/search';
 
   final String search;
-  final List<Tag> tagFilters;
-  final List<BarcodeGroup> groupFilters;
+  final List<String> tagFilters;
+  final List<String> groupFilters;
 
   const SearchScreen({Key key, this.search, this.tagFilters, this.groupFilters})
       : super(key: key);
@@ -28,8 +28,8 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   List<Barcode> barcodes = [];
   String search;
-  List<Tag> tagFilters;
-  List<BarcodeGroup> groupFilters;
+  List<String> tagFilters;
+  List<String> groupFilters;
 
   @override
   void initState() {
@@ -45,11 +45,11 @@ class _SearchScreenState extends State<SearchScreen> {
   bool _filterFunc(Barcode barcode) {
     bool check = true;
     //tag filter
-    check = tagFilters.every((tf) => barcode.tags.contains(tf.uid));
+    check = tagFilters.every((tf) => barcode.tags.contains(tf));
     if (!check) return false;
     //group filter
     check = groupFilters.isEmpty;
-    check = check || groupFilters.any((gf) => barcode.group == gf.uid);
+    check = check || groupFilters.any((gf) => barcode.group == gf);
     if (!check) return false;
     //word filter
     check = search.isEmpty;
@@ -78,12 +78,13 @@ class _SearchScreenState extends State<SearchScreen> {
           search = str;
         });
       },
-      onTagFilterChange: (List<Tag> filters) {
+      onTagFilterChange: (List<String> filters) {
         setState(() {
           tagFilters = filters;
         });
       },
-      onGroupFilterChange: (List<BarcodeGroup> filters) {
+      tagFilters: tagFilters,
+      onGroupFilterChange: (List<String> filters) {
         setState(() {
           groupFilters = filters;
         });
@@ -129,7 +130,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           children: [
                             Text(barcode.description ?? 'null'),
                             Text('group: ' + (barcode.group ?? 'null')),
-                            TagList(barcode: barcode),
+                            TagList(tags: barcode.tags),
                           ],
                         ),
                       ),
