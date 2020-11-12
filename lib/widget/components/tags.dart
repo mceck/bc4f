@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:bc4f/model/barcode.dart';
 import 'package:bc4f/model/tag.dart';
 
-class TagView extends StatelessWidget {
+class TagList extends StatelessWidget {
   final Barcode barcode;
 
-  const TagView({Key key, this.barcode}) : super(key: key);
+  const TagList({Key key, this.barcode}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

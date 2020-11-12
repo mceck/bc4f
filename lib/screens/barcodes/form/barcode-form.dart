@@ -6,7 +6,7 @@ import 'package:bc4f/utils/constants.dart';
 import 'package:bc4f/utils/logger.dart';
 import 'package:bc4f/widget/components/firebase-stream-builder.dart';
 import 'package:bc4f/widget/components/select-list.dart';
-import 'package:bc4f/widget/components/tag-view.dart';
+import 'package:bc4f/widget/components/tags.dart';
 import 'package:bc4f/widget/layout/scaffold.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

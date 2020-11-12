@@ -27,6 +27,22 @@ class BarcodeService {
     return collection.snapshots();
   }
 
+  static Future<void> deleteTag(String uid) async {
+    final useruid = AppStatus().loggedUser.uid;
+    // rimuovo tutti i riferimenti al tag
+    final data = await FirebaseFirestore.instance
+        .collection('barcode')
+        .where('user', isEqualTo: useruid)
+        .where('tags', arrayContains: uid)
+        .get();
+    await Future.forEach(data.docs, (doc) {
+      final json = doc.data();
+      json['tags']?.remove(uid);
+      return doc.reference.set(json);
+    });
+    await FirebaseFirestore.instance.collection('tag').doc(uid).delete();
+  }
+
   static Stream<DocumentSnapshot> streamBarcode(String uid) {
     final result = FirebaseFirestore.instance.collection('barcode').doc(uid);
     log.info('result $result');
