@@ -18,6 +18,22 @@ class BarcodeService {
     return collection.snapshots();
   }
 
+  static Future<void> deleteGroup(String uid) async {
+    final useruid = AppStatus().loggedUser.uid;
+    // elimina anche tutti i barcode associati al gruppo
+    final snap = await FirebaseFirestore.instance
+        .collection('barcode')
+        .where('user', isEqualTo: useruid)
+        .where('group', isEqualTo: uid)
+        .get();
+    await Future.forEach<QueryDocumentSnapshot>(
+        snap.docs, (doc) => doc.reference.delete());
+    await FirebaseFirestore.instance
+        .collection('barcode_group')
+        .doc(uid)
+        .delete();
+  }
+
   static Stream<QuerySnapshot> streamTags() {
     final useruid = AppStatus().loggedUser.uid;
     log.info('stream all tags for user $useruid');
