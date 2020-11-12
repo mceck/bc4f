@@ -5,8 +5,6 @@ part 'group.g.dart';
 @JsonSerializable()
 class BarcodeGroup {
   String uid;
-  @JsonKey(defaultValue: [])
-  List<String> barcodes;
   String name;
   String description;
   String imgUrl;
@@ -14,7 +12,6 @@ class BarcodeGroup {
   int order;
 
   BarcodeGroup({
-    this.barcodes,
     this.description,
     this.uid,
     this.imgUrl,

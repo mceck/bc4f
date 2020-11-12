@@ -8,6 +8,7 @@ import 'package:bc4f/screens/groups/form/group-form.dart';
 import 'package:bc4f/service/barcode-service.dart';
 import 'package:bc4f/utils/constants.dart';
 import 'package:bc4f/utils/logger.dart';
+import 'package:bc4f/widget/components/firebase-stream-builder.dart';
 import 'package:bc4f/widget/layout/scaffold.dart';
 import 'package:flutter/material.dart';
 
@@ -23,45 +24,21 @@ class GroupDetail extends StatefulWidget {
 }
 
 class _GroupDetailState extends State<GroupDetail> {
-  List<Barcode> barcodes = [];
   List<Tag> tagFilters = [];
 
-  List<Barcode> get filteredBarcodes {
+  List<Barcode> filterList(List<Barcode> barcodes) {
     return barcodes
         .where((bar) =>
             tagFilters.every((filter) => bar.tags.contains(filter.uid)))
         .toList();
   }
 
-  List<StreamSubscription> subscriptions = [];
+  Stream barcodeStream;
 
   @override
   void initState() {
-    widget.group.barcodes.forEach((bcId) {
-      //listen firebase barocde entity each barcodeId in the list
-      final subs = BarcodeService.getBarcode(bcId).listen((snap) {
-        final barcode = Barcode.fromJson(snap.data());
-        final updIdx = barcodes.indexWhere((bc) => bc.uid == barcode.uid);
-        // store the result/changes on the buffer
-        setState(() {
-          if (updIdx < 0) {
-            //new one
-            barcodes.add(barcode);
-          } else {
-            //update
-            barcodes[updIdx] = barcode;
-          }
-        });
-      });
-      subscriptions.add(subs);
-    });
+    barcodeStream = BarcodeService.streamBarcodesByGroup(widget.group.uid);
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    subscriptions.forEach((subs) => subs.cancel());
-    super.dispose();
   }
 
   @override
@@ -79,13 +56,17 @@ class _GroupDetailState extends State<GroupDetail> {
       },
       body: Padding(
         padding: const EdgeInsets.all(kDefaultPadding),
-        child: Column(
-          children: [
-            Text('Barcodes:'),
-            Expanded(
-              child: GroupGrid(barcodes: filteredBarcodes),
-            ),
-          ],
+        child: FirebaseQueryBuilder<Barcode>(
+          stream: barcodeStream,
+          builder: (ctx, list) => Column(
+            children: [
+              Text('Barcodes:'),
+              Expanded(
+                child: GroupGrid(barcodes: filterList(list)),
+              ),
+            ],
+          ),
+          factoryMethod: (json) => Barcode.fromJson(json),
         ),
       ),
       floatAction: FloatingActionButton(

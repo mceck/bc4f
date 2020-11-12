@@ -9,6 +9,7 @@ part of 'barcode.dart';
 Barcode _$BarcodeFromJson(Map<String, dynamic> json) {
   return Barcode(
     code: json['code'] as String,
+    group: json['group'] as String,
     description: json['description'] as String,
     type: _BarcodeConv.bcTypeFromJson(json['type'] as String) ??
         bcLib.BarcodeType.CodeEAN13,
@@ -24,6 +25,7 @@ Map<String, dynamic> _$BarcodeToJson(Barcode instance) => <String, dynamic>{
       'uid': instance.uid,
       'code': instance.code,
       'type': _BarcodeConv.bcTypeToJson(instance.type),
+      'group': instance.group,
       'name': instance.name,
       'description': instance.description,
       'imgUrl': instance.imgUrl,

@@ -12,6 +12,7 @@ class Barcode {
     defaultValue: bcLib.BarcodeType.CodeEAN13,
   )
   bcLib.BarcodeType type;
+  String group;
   String name;
   String description;
   String imgUrl;
@@ -22,6 +23,7 @@ class Barcode {
 
   Barcode({
     this.code,
+    this.group,
     this.description,
     this.type,
     this.uid,
