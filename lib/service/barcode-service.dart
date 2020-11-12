@@ -6,7 +6,6 @@ import 'package:bc4f/utils/logger.dart';
 
 class BarcodeService {
   static Stream<QuerySnapshot> getAll() {
-    // this is a test
     final useruid = AppStatus().loggedUser.uid;
     log.info('get all groups for user $useruid');
     final collection = FirebaseFirestore.instance
@@ -15,5 +14,11 @@ class BarcodeService {
         .orderBy('order');
     log.info('collection $collection');
     return collection.snapshots();
+  }
+
+  static Stream<DocumentSnapshot> getBarcode(String uid) {
+    final result = FirebaseFirestore.instance.collection('barcode').doc(uid);
+    log.info('result $result');
+    return result.snapshots();
   }
 }
