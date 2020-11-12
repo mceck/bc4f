@@ -97,6 +97,7 @@ class _GroupViewState extends State<GroupView> {
       ),
       floatAction: FloatingActionButton(
         onPressed: () => Navigator.of(context).pushNamed(GroupForm.route),
+        child: Icon(Icons.add),
       ),
     );
   }

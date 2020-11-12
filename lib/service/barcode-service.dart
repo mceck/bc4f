@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:bc4f/model/barcode.dart';
+import 'package:bc4f/model/group.dart';
 import 'package:bc4f/model/tag.dart';
 import 'package:bc4f/utils/app-status.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,6 +17,21 @@ class BarcodeService {
         .orderBy('order');
     log.info('collection $collection');
     return collection.snapshots();
+  }
+
+  static Future<void> saveGroup(BarcodeGroup group) {
+    final isNew = (group.uid == null);
+    final data = group.toJson();
+    DocumentReference doc;
+    if (isNew) {
+      doc = FirebaseFirestore.instance.collection('barcode_group').doc();
+    } else {
+      doc =
+          FirebaseFirestore.instance.collection('barcode_group').doc(group.uid);
+    }
+    data['user'] = AppStatus().loggedUser.uid;
+    data['uid'] = doc.id;
+    return doc.set(data);
   }
 
   static Future<void> deleteGroup(String uid) async {
