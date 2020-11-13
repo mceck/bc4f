@@ -17,8 +17,10 @@ class __BarcodeScannerState extends State<_BarcodeScanner> {
   Widget build(BuildContext context) {
     return CameraMlVision<List<Barcode>>(
       detector: FirebaseVision.instance
-          .barcodeDetector(BarcodeDetectorOptions(
-              barcodeFormats: BarcodeFormat.ean13 | BarcodeFormat.code128))
+          .barcodeDetector(
+              // BarcodeDetectorOptions(
+              //     barcodeFormats: BarcodeFormat.ean13 | BarcodeFormat.code128),
+              )
           .detectInImage,
       onResult: (List<Barcode> barcodes) {
         if (!mounted ||
