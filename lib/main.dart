@@ -1,3 +1,5 @@
+import 'package:bc4f/provider/barcode-provider.dart';
+import 'package:bc4f/provider/group-provider.dart';
 import 'package:bc4f/provider/tag-provider.dart';
 import 'package:flutter/material.dart';
 import 'package:bc4f/router/router.dart';
@@ -28,8 +30,12 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IsAuth(
-      child: ChangeNotifierProvider(
-        create: (ctx) => TagProvider(),
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (ctx) => TagProvider()),
+          ChangeNotifierProvider(create: (ctx) => BarcodeProvider()),
+          ChangeNotifierProvider(create: (ctx) => GroupProvider()),
+        ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           navigatorKey: AppStatus().navKey,

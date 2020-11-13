@@ -102,6 +102,18 @@ class BarcodeService {
     return result.docs.map((doc) => Barcode.fromJson(doc.data())).toList();
   }
 
+  static Stream<QuerySnapshot> streamBarcodes() {
+    final useruid = AppStatus().loggedUser.uid;
+    log.info('stream all barcodes for user $useruid');
+    final collection = FirebaseFirestore.instance
+        .collection('barcode')
+        .where('user', isEqualTo: useruid)
+        .orderBy('group')
+        .orderBy('order');
+    log.info('collection $collection');
+    return collection.snapshots();
+  }
+
   static Stream<DocumentSnapshot> streamBarcode(String uid) {
     final result = FirebaseFirestore.instance.collection('barcode').doc(uid);
     log.info('result $result');

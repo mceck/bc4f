@@ -1,16 +1,12 @@
+import 'package:bc4f/provider/barcode-provider.dart';
 import 'package:bc4f/screens/barcodes/barcode-card.dart';
-import 'package:bc4f/utils/logger.dart';
-import 'package:bc4f/widget/components/tags.dart';
 import 'package:flutter/material.dart';
-import 'package:barcode/barcode.dart' as bcLib;
 import 'package:bc4f/model/barcode.dart';
 import 'package:bc4f/screens/barcodes/view/barcode-view.dart';
 import 'package:bc4f/service/barcode-service.dart';
 import 'package:bc4f/utils/constants.dart';
-import 'package:bc4f/widget/components/barcode-image.dart';
 import 'package:bc4f/widget/layout/scaffold.dart';
-import 'package:bc4f/model/group.dart';
-import 'package:bc4f/model/tag.dart';
+import 'package:provider/provider.dart';
 
 class SearchScreen extends StatefulWidget {
   static const route = '/search';
@@ -27,7 +23,6 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  List<Barcode> barcodes = [];
   String search;
   List<String> tagFilters;
   List<String> groupFilters;
@@ -37,9 +32,6 @@ class _SearchScreenState extends State<SearchScreen> {
     search = widget.search ?? '';
     tagFilters = widget.tagFilters ?? [];
     groupFilters = widget.groupFilters ?? [];
-    BarcodeService.getBarcodes().then((list) => setState(() {
-          barcodes = list;
-        }));
     super.initState();
   }
 
@@ -67,6 +59,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   List<Barcode> get filteredBarcodes {
+    final barcodes = Provider.of<BarcodeProvider>(context).barcodes;
     return barcodes.where(_filterFunc).toList();
   }
 

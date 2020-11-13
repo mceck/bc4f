@@ -45,7 +45,7 @@ class _BarcodeImageState extends State<BarcodeImage> {
       // TODO rivedi dimensionamento
       final height = widget.height ?? widget.width;
       final width = widget.width ?? widget.height;
-      log.info('web $width x $height');
+      // log.info('web $width x $height');
       String hashCode = String.fromCharCodes(
           List<int>.generate(128, (i) => _random.nextInt(256)));
       ui.platformViewRegistry.registerViewFactory('img-svg-$hashCode',

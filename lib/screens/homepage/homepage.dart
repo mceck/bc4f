@@ -1,4 +1,5 @@
 import 'package:bc4f/model/group.dart';
+import 'package:bc4f/provider/group-provider.dart';
 import 'package:bc4f/utils/constants.dart';
 import 'package:bc4f/widget/components/firebase-stream-builder.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:bc4f/screens/homepage/components/group-list.dart';
 import 'package:bc4f/service/barcode-service.dart';
 import 'package:bc4f/utils/logger.dart';
 import 'package:bc4f/widget/layout/scaffold.dart';
+import 'package:provider/provider.dart';
 
 class HomepageScreen extends StatefulWidget {
   static const route = '/';
@@ -15,7 +17,6 @@ class HomepageScreen extends StatefulWidget {
 }
 
 class _HomepageScreenState extends State<HomepageScreen> {
-  final Stream groupStream = BarcodeService.streamGroups();
   @override
   Widget build(BuildContext context) {
     final subtitle = Theme.of(context).textTheme.subtitle1;
@@ -29,10 +30,9 @@ class _HomepageScreenState extends State<HomepageScreen> {
               'Groups',
               style: subtitle,
             ),
-            FirebaseQueryBuilder<BarcodeGroup>(
-              stream: groupStream,
-              builder: (ctx, list) => GroupList(groups: list),
-              factoryMethod: (json) => BarcodeGroup.fromJson(json),
+            Consumer<GroupProvider>(
+              builder: (ctx, groupProvider, child) =>
+                  GroupList(groups: groupProvider.groups),
             ),
             Text('Recently used', style: subtitle),
             Text('...'),

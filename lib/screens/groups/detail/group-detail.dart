@@ -1,16 +1,14 @@
-import 'dart:async';
-
 import 'package:bc4f/model/barcode.dart';
 import 'package:bc4f/model/group.dart';
+import 'package:bc4f/provider/barcode-provider.dart';
 import 'package:bc4f/screens/barcodes/form/barcode-form.dart';
 import 'package:bc4f/screens/groups/detail/components/group-grid.dart';
 import 'package:bc4f/screens/groups/form/group-form.dart';
-import 'package:bc4f/service/barcode-service.dart';
 import 'package:bc4f/utils/constants.dart';
 import 'package:bc4f/utils/logger.dart';
-import 'package:bc4f/widget/components/firebase-stream-builder.dart';
 import 'package:bc4f/widget/layout/scaffold.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class GroupDetail extends StatefulWidget {
   static const route = '/groups/detail';
@@ -28,16 +26,14 @@ class _GroupDetailState extends State<GroupDetail> {
 
   List<Barcode> filterList(List<Barcode> barcodes) {
     return barcodes
-        .where((bar) => tagFilters.every((filter) => bar.tags.contains(filter)))
+        .where(
+          (bar) =>
+              bar.group == widget.group.uid &&
+              tagFilters.every(
+                (filter) => bar.tags.contains(filter),
+              ),
+        )
         .toList();
-  }
-
-  Stream barcodeStream;
-
-  @override
-  void initState() {
-    barcodeStream = BarcodeService.streamBarcodesByGroup(widget.group.uid);
-    super.initState();
   }
 
   @override
@@ -60,17 +56,16 @@ class _GroupDetailState extends State<GroupDetail> {
       },
       body: Padding(
         padding: const EdgeInsets.all(kDefaultPadding),
-        child: FirebaseQueryBuilder<Barcode>(
-          stream: barcodeStream,
-          builder: (ctx, list) => Column(
+        child: Consumer<BarcodeProvider>(
+          builder: (ctx, barcodeProvider, child) => Column(
             children: [
               Text('Barcodes:'),
               Expanded(
-                child: GroupGrid(barcodes: filterList(list)),
+                child:
+                    GroupGrid(barcodes: filterList(barcodeProvider.barcodes)),
               ),
             ],
           ),
-          factoryMethod: (json) => Barcode.fromJson(json),
         ),
       ),
       floatAction: FloatingActionButton(
