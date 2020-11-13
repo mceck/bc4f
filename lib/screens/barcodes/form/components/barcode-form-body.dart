@@ -25,6 +25,7 @@ class _BarcodeFormBodyState extends State<BarcodeFormBody> {
   TextEditingController code;
   TextEditingController name;
   TextEditingController description;
+  TextEditingController imgUrl;
 
   Barcode _barcode;
 
@@ -36,6 +37,7 @@ class _BarcodeFormBodyState extends State<BarcodeFormBody> {
     code = TextEditingController(text: _barcode?.code);
     name = TextEditingController(text: _barcode?.name);
     description = TextEditingController(text: _barcode?.description);
+    imgUrl = TextEditingController(text: _barcode?.imgUrl);
 
     super.initState();
   }
@@ -45,6 +47,7 @@ class _BarcodeFormBodyState extends State<BarcodeFormBody> {
     if (code != null) code.dispose();
     if (name != null) name.dispose();
     if (description != null) description.dispose();
+    if (imgUrl != null) imgUrl.dispose();
     super.dispose();
   }
 
@@ -52,12 +55,14 @@ class _BarcodeFormBodyState extends State<BarcodeFormBody> {
     _barcode.code = code.text;
     _barcode.name = name.text;
     _barcode.description = description.text;
+    _barcode.imgUrl = imgUrl.text;
   }
 
   void updateCtrls() {
     code.text = _barcode.code ?? '';
     name.text = _barcode.name ?? '';
     description.text = _barcode.description ?? '';
+    imgUrl.text = _barcode.imgUrl ?? '';
   }
 
   bool validate() {
