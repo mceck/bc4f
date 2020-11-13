@@ -6,6 +6,8 @@ import 'package:bc4f/widget/layout/scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:bc4f/model/barcode.dart';
 
+import 'components/barcode-view-body.dart';
+
 class BarcodeView extends StatefulWidget {
   static const route = '/barcodes/view';
 
@@ -45,29 +47,8 @@ class _BarcodeViewState extends State<BarcodeView>
         BarcodeForm.route,
         arguments: {'barcode': widget.barcodes[tabController.index]},
       ),
-      body: TabBarView(
-        controller: tabController,
-        children: widget.barcodes
-            .map(
-              (barcode) => Padding(
-                padding: const EdgeInsets.all(kDefaultPadding),
-                child: Column(
-                  children: [
-                    if (barcode.tags != null) TagList(tags: barcode.tags),
-                    Expanded(
-                      child: BarcodeImage(
-                        barcode.code ?? 'null',
-                        barcode.type,
-                        width: MediaQuery.of(context).size.width * 0.9,
-                      ),
-                    ),
-                    Text(barcode.description ?? 'null'),
-                  ],
-                ),
-              ),
-            )
-            .toList(),
-      ),
+      body: BarcodeViewBody(
+          tabController: tabController, barcodes: widget.barcodes),
     );
   }
 }

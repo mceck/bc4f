@@ -2,9 +2,8 @@ import 'package:bc4f/model/barcode.dart';
 import 'package:bc4f/model/group.dart';
 import 'package:bc4f/provider/barcode-provider.dart';
 import 'package:bc4f/screens/barcodes/form/barcode-form.dart';
-import 'package:bc4f/screens/groups/detail/components/group-grid.dart';
+import 'package:bc4f/screens/groups/detail/components/group-detail-body.dart';
 import 'package:bc4f/screens/groups/form/group-form.dart';
-import 'package:bc4f/utils/constants.dart';
 import 'package:bc4f/utils/logger.dart';
 import 'package:bc4f/widget/layout/scaffold.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +23,12 @@ class GroupDetail extends StatefulWidget {
 class _GroupDetailState extends State<GroupDetail> {
   List<String> tagFilters = [];
 
+  void onTagFilterChange(filters) {
+    setState(() {
+      tagFilters = filters;
+    });
+  }
+
   List<Barcode> filterList(List<Barcode> barcodes) {
     return barcodes
         .where(
@@ -39,11 +44,7 @@ class _GroupDetailState extends State<GroupDetail> {
   @override
   Widget build(BuildContext context) {
     return Bc4fScaffold(
-      onTagFilterChange: (filters) {
-        setState(() {
-          tagFilters = filters;
-        });
-      },
+      onTagFilterChange: onTagFilterChange,
       icon: Icon(Icons.group_work),
       title: widget.group.name,
       subtitle: widget.group.description,
@@ -54,19 +55,9 @@ class _GroupDetailState extends State<GroupDetail> {
           arguments: {'group': widget.group},
         );
       },
-      body: Padding(
-        padding: const EdgeInsets.all(kDefaultPadding),
-        child: Consumer<BarcodeProvider>(
-          builder: (ctx, barcodeProvider, child) => Column(
-            children: [
-              Text('Barcodes:'),
-              Expanded(
-                child:
-                    GroupGrid(barcodes: filterList(barcodeProvider.barcodes)),
-              ),
-            ],
-          ),
-        ),
+      body: Consumer<BarcodeProvider>(
+        builder: (ctx, barcodeProvider, child) =>
+            GroupDetailBody(barcodes: filterList(barcodeProvider.barcodes)),
       ),
       floatAction: FloatingActionButton(
         child: Icon(Icons.add),

@@ -27,6 +27,9 @@ class BarcodeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final barcode = barcodes[index];
+    final nameVisual = barcode.name != null && barcode.name.isNotEmpty
+        ? barcode.name
+        : barcode.code ?? 'null';
     return GestureDetector(
       onTap: () => Navigator.of(context).pushNamed(
         BarcodeView.route,
@@ -39,22 +42,22 @@ class BarcodeCard extends StatelessWidget {
           child: Column(
             children: [
               Expanded(
-                flex: 2,
+                flex: 3,
                 child: Image.network(
                   barcode.imgUrl ?? '',
                   errorBuilder: (ctx, err, stack) {
                     return BarcodeImage(
                       barcode.code ?? '',
                       barcode.type ?? bcLib.BarcodeType.CodeEAN13,
-                      width: 200,
+                      width: 160,
                     );
                   },
                 ),
               ),
               Flexible(
-                flex: 1,
+                flex: 2,
                 child: ListTile(
-                  title: Text(barcode.code ?? 'null'),
+                  title: Text(nameVisual),
                   subtitle: Column(
                     children: [
                       Text(barcode.description ?? 'null'),

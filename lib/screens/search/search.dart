@@ -1,12 +1,10 @@
 import 'package:bc4f/provider/barcode-provider.dart';
-import 'package:bc4f/screens/barcodes/barcode-card.dart';
 import 'package:flutter/material.dart';
 import 'package:bc4f/model/barcode.dart';
-import 'package:bc4f/screens/barcodes/view/barcode-view.dart';
-import 'package:bc4f/service/barcode-service.dart';
-import 'package:bc4f/utils/constants.dart';
 import 'package:bc4f/widget/layout/scaffold.dart';
 import 'package:provider/provider.dart';
+
+import 'components/search-body.dart';
 
 class SearchScreen extends StatefulWidget {
   static const route = '/search';
@@ -83,33 +81,7 @@ class _SearchScreenState extends State<SearchScreen> {
           groupFilters = filters;
         });
       },
-      body: Padding(
-        padding: const EdgeInsets.all(kDefaultPadding),
-        child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-            // childAspectRatio: 4 / 3,
-            maxCrossAxisExtent: 400,
-            crossAxisSpacing: kDefaultPadding,
-            mainAxisSpacing: kDefaultPadding,
-          ),
-          itemCount: barcodes.length,
-          itemBuilder: (ctx, index) {
-            final barcode = barcodes[index];
-            return GestureDetector(
-              onTap: () => Navigator.of(context).pushNamed(
-                BarcodeView.route,
-                arguments: {'barcodes': barcodes, 'startIdx': index},
-              ),
-              child: BarcodeCard(
-                barcodes: barcodes,
-                index: index,
-                showGroup: true,
-                withSlideActions: false,
-              ),
-            );
-          },
-        ),
-      ),
+      body: SearchBody(barcodes: barcodes),
     );
   }
 }
