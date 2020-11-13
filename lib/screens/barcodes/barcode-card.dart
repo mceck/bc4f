@@ -11,8 +11,18 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 class BarcodeCard extends StatelessWidget {
   final List<Barcode> barcodes;
   final int index;
+  final bool withSlideActions;
+  final bool showGroup;
+  final bool showTags;
 
-  const BarcodeCard({Key key, this.barcodes, this.index}) : super(key: key);
+  const BarcodeCard({
+    Key key,
+    this.barcodes,
+    this.index,
+    this.withSlideActions = false,
+    this.showGroup = false,
+    this.showTags = true,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -48,30 +58,37 @@ class BarcodeCard extends StatelessWidget {
                   subtitle: Column(
                     children: [
                       Text(barcode.description ?? 'null'),
-                      TagList(tags: barcode.tags),
+                      if (showGroup)
+                        Text('group: ' + (barcode.group ?? 'null')),
+                      if (showTags) TagList(tags: barcode.tags),
                     ],
                   ),
                 ),
               )
             ],
           ),
-          actions: <Widget>[
-            IconSlideAction(
-              caption: 'Delete',
-              color: Colors.red,
-              icon: Icons.delete,
-              onTap: () => BarcodeService.deleteBarcode(barcode.uid),
-            ),
-          ],
-          secondaryActions: <Widget>[
-            IconSlideAction(
-              caption: 'Edit',
-              color: Colors.blue,
-              icon: Icons.edit,
-              onTap: () => Navigator.of(context).pushNamed(BarcodeForm.route,
-                  arguments: {'barcode': barcode}),
-            ),
-          ],
+          actions: withSlideActions
+              ? [
+                  IconSlideAction(
+                    caption: 'Delete',
+                    color: Colors.red,
+                    icon: Icons.delete,
+                    onTap: () => BarcodeService.deleteBarcode(barcode.uid),
+                  ),
+                ]
+              : null,
+          secondaryActions: withSlideActions
+              ? [
+                  IconSlideAction(
+                    caption: 'Edit',
+                    color: Colors.blue,
+                    icon: Icons.edit,
+                    onTap: () => Navigator.of(context).pushNamed(
+                        BarcodeForm.route,
+                        arguments: {'barcode': barcode}),
+                  ),
+                ]
+              : null,
         ),
       ),
     );
