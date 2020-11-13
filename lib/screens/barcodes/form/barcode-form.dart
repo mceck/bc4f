@@ -1,17 +1,14 @@
 import 'package:barcode/barcode.dart' as bcLib;
-import 'package:bc4f/model/tag.dart';
-import 'package:bc4f/provider/tag-provider.dart';
 import 'package:bc4f/service/barcode-service.dart';
 import 'package:bc4f/utils/constants.dart';
 import 'package:bc4f/utils/logger.dart';
-import 'package:bc4f/widget/components/firebase-stream-builder.dart';
+import 'package:bc4f/widget/components/barcode-scanner.dart';
 import 'package:bc4f/widget/components/select-list.dart';
 import 'package:bc4f/widget/components/tags.dart';
 import 'package:bc4f/widget/layout/scaffold.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:bc4f/model/barcode.dart';
-import 'package:provider/provider.dart';
 
 class BarcodeForm extends StatefulWidget {
   static const route = '/barcodes/form';
@@ -77,7 +74,6 @@ class _BarcodeFormState extends State<BarcodeForm> {
 
   @override
   Widget build(BuildContext context) {
-    final tags = Provider.of<TagProvider>(context).tags;
     return Bc4fScaffold(
       body: Padding(
         padding: const EdgeInsets.all(kDefaultPadding),
@@ -97,18 +93,13 @@ class _BarcodeFormState extends State<BarcodeForm> {
                     icon: Icon(Icons.photo_camera),
                     onPressed: () {
                       log.info('open scanner');
-                      // TODO
-                      // BarcodeScanner.scan().then(
-                      //   (value) {
-                      //     if (value.type != ResultType.Barcode) return;
-                      //     setState(
-                      //       () {
-                      //         code.text = value.rawContent;
-                      //         _barcode.type = BCTypes.formatToType(value.format);
-                      //       },
-                      //     );
-                      //   },
-                      // );
+                      scanBarcode(context).then((value) {
+                        log.info('got value $value from scanner');
+                        setState(() {
+                          code.text = value.code;
+                          _barcode.type = value.type;
+                        });
+                      });
                     },
                   ),
               ],

@@ -30,6 +30,7 @@ class SelectList extends StatelessWidget {
         color: primaryColor,
         size: showIcon ? 20 : 0,
       ),
+      hint: Text('Tag...'),
       iconSize: 24,
       elevation: 16,
       // style: TextStyle(color: primaryColor),
