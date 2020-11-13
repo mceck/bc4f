@@ -36,6 +36,7 @@ class BarcodeCard extends StatelessWidget {
         arguments: {'barcodes': barcodes, 'startIdx': index},
       ),
       child: Card(
+        clipBehavior: Clip.antiAlias,
         child: Slidable(
           actionPane: SlidableDrawerActionPane(),
           actionExtentRatio: 0.25,

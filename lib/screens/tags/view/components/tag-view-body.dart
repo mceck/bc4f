@@ -36,6 +36,7 @@ class TagViewBody extends StatelessWidget {
               },
             ),
             child: Card(
+              clipBehavior: Clip.antiAlias,
               child: Slidable(
                 actionPane: SlidableDrawerActionPane(),
                 actionExtentRatio: 0.25,
