@@ -8,6 +8,7 @@ import 'package:bc4f/widget/components/select-list.dart';
 import 'package:bc4f/widget/components/tags.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:giphy_picker/giphy_picker.dart';
 
 class BarcodeFormBody extends StatefulWidget {
   const BarcodeFormBody({
@@ -129,6 +130,31 @@ class _BarcodeFormBodyState extends State<BarcodeFormBody> {
           TextField(
             controller: description,
             decoration: InputDecoration(labelText: 'description'),
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: imgUrl,
+                  decoration: InputDecoration(labelText: 'imgUrl'),
+                ),
+              ),
+              IconButton(
+                icon: Icon(Icons.gif),
+                onPressed: () {
+                  GiphyPicker.pickGif(
+                    context: context,
+                    apiKey: GIPHY_APIKEY,
+                    lang: GiphyLanguage.italian,
+                    showPreviewPage: false,
+                  ).then((gif) {
+                    setState(() {
+                      imgUrl.text = gif.images.original.url;
+                    });
+                  });
+                },
+              ),
+            ],
           ),
           EditableTagList(
             onTagFilterChange: (filter) {

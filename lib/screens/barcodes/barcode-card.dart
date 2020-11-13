@@ -58,7 +58,10 @@ class BarcodeCard extends StatelessWidget {
               Flexible(
                 flex: 2,
                 child: ListTile(
-                  title: Text(nameVisual),
+                  title: Text(
+                    nameVisual,
+                    textAlign: TextAlign.center,
+                  ),
                   subtitle: Column(
                     children: [
                       Text(barcode.description ?? 'null'),
