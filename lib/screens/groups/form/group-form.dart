@@ -67,6 +67,7 @@ class _GroupFormState extends State<GroupForm> {
   @override
   Widget build(BuildContext context) {
     return Bc4fScaffold(
+      title: _group.name ?? 'Group',
       body: Padding(
         padding: const EdgeInsets.all(kDefaultPadding),
         child: Column(

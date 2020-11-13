@@ -1,3 +1,4 @@
+import 'package:bc4f/screens/barcodes/barcode-card.dart';
 import 'package:bc4f/utils/logger.dart';
 import 'package:bc4f/widget/components/tags.dart';
 import 'package:flutter/material.dart';
@@ -106,37 +107,11 @@ class _SearchScreenState extends State<SearchScreen> {
                 BarcodeView.route,
                 arguments: {'barcodes': barcodes, 'startIdx': index},
               ),
-              child: Card(
-                child: Column(
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: Image.network(
-                        barcode.imgUrl ?? '',
-                        errorBuilder: (ctx, err, stack) {
-                          return BarcodeImage(
-                            barcode.code ?? '',
-                            barcode.type ?? bcLib.BarcodeType.CodeEAN13,
-                            width: 200,
-                          );
-                        },
-                      ),
-                    ),
-                    Flexible(
-                      flex: 1,
-                      child: ListTile(
-                        title: Text(barcode.code ?? 'null'),
-                        subtitle: Column(
-                          children: [
-                            Text(barcode.description ?? 'null'),
-                            Text('group: ' + (barcode.group ?? 'null')),
-                            TagList(tags: barcode.tags),
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
-                ),
+              child: BarcodeCard(
+                barcodes: barcodes,
+                index: index,
+                showGroup: true,
+                withSlideActions: false,
               ),
             );
           },

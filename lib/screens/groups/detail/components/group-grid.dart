@@ -1,5 +1,5 @@
 import 'package:bc4f/model/barcode.dart';
-import 'package:bc4f/screens/groups/detail/components/barcode-card.dart';
+import 'package:bc4f/screens/barcodes/barcode-card.dart';
 import 'package:bc4f/utils/constants.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +19,11 @@ class GroupGrid extends StatelessWidget {
       ),
       itemCount: barcodes.length,
       itemBuilder: (ctx, index) {
-        return BarcodeCard(barcodes: barcodes, index: index);
+        return BarcodeCard(
+          barcodes: barcodes,
+          index: index,
+          withSlideActions: true,
+        );
       },
     );
   }
