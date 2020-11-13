@@ -39,7 +39,7 @@ class _EditableTagListState extends State<EditableTagList> {
           IconButton(
             icon: Icon(
               Icons.add,
-              color: Colors.white,
+              color: Colors.green,
             ),
             onPressed: () {
               setState(() {
