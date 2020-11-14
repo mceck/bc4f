@@ -47,6 +47,9 @@ class App extends StatelessWidget {
             textTheme: TextTheme(subtitle1: TextStyle(fontSize: 18)),
             primarySwatch: Colors.red,
             primaryColor: Colors.redAccent,
+            buttonTheme: ThemeData.dark()
+                .buttonTheme
+                .copyWith(buttonColor: Colors.redAccent),
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
           onGenerateRoute: Routing.onGenerateRoute,

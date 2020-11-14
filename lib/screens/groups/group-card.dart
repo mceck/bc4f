@@ -18,9 +18,18 @@ class GroupCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final h5 = Theme.of(context)
+        .textTheme
+        .headline5
+        .copyWith(color: Colors.white, fontWeight: FontWeight.bold);
     final fallbackImg = Container(
-      color: Colors.blue,
-      child: Center(child: Text(group.name)),
+      color: Theme.of(context).primaryColor,
+      child: Center(
+        child: Text(
+          group.name,
+          style: h5,
+        ),
+      ),
     );
     return GestureDetector(
       onTap: () => Navigator.of(context).pushNamed(

@@ -7,9 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class TagViewBody extends StatelessWidget {
+  final readOnly;
   const TagViewBody({
     Key key,
     @required this.tags,
+    this.readOnly = false,
   }) : super(key: key);
 
   final List<Tag> tags;
@@ -20,8 +22,8 @@ class TagViewBody extends StatelessWidget {
         shrinkWrap: true,
         primary: false,
         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-          childAspectRatio: 4 / 2,
-          maxCrossAxisExtent: kDefaultGridMaxExtent,
+          childAspectRatio: 5 / 2,
+          maxCrossAxisExtent: 250,
           crossAxisSpacing: kDefaultPadding,
           mainAxisSpacing: kDefaultPadding,
         ),
@@ -41,33 +43,37 @@ class TagViewBody extends StatelessWidget {
               child: Slidable(
                 actionPane: SlidableDrawerActionPane(),
                 actionExtentRatio: 0.25,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
+                child: Center(
+                  child: ListTile(
+                    leading: Icon(
                       Icons.label,
                       color: tag.color,
                     ),
-                    Text(tag.name ?? 'null'),
-                  ],
+                    title: Text(tag.name ?? 'null'),
+                  ),
                 ),
-                actions: <Widget>[
-                  IconSlideAction(
-                    caption: 'Delete',
-                    color: Colors.red,
-                    icon: Icons.delete,
-                    onTap: () => BarcodeService.deleteTag(tag.uid),
-                  ),
-                ],
-                secondaryActions: <Widget>[
-                  IconSlideAction(
-                    caption: 'Edit',
-                    color: Colors.blue,
-                    icon: Icons.edit,
-                    onTap: () => Navigator.of(context)
-                        .pushNamed(TagForm.route, arguments: {'tag': tag}),
-                  ),
-                ],
+                actions: readOnly
+                    ? null
+                    : [
+                        IconSlideAction(
+                          caption: 'Delete',
+                          color: Colors.red,
+                          icon: Icons.delete,
+                          onTap: () => BarcodeService.deleteTag(tag.uid),
+                        ),
+                      ],
+                secondaryActions: readOnly
+                    ? null
+                    : [
+                        IconSlideAction(
+                          caption: 'Edit',
+                          color: Colors.blue,
+                          icon: Icons.edit,
+                          onTap: () => Navigator.of(context).pushNamed(
+                              TagForm.route,
+                              arguments: {'tag': tag}),
+                        ),
+                      ],
               ),
             ),
           );

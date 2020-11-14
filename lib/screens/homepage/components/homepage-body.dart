@@ -1,8 +1,7 @@
 import 'package:bc4f/provider/group-provider.dart';
 import 'package:bc4f/provider/tag-provider.dart';
 import 'package:bc4f/screens/groups/group-card.dart';
-import 'package:bc4f/screens/search/search.dart';
-import 'package:bc4f/widget/components/tags.dart';
+import 'package:bc4f/screens/tags/view/components/tag-view-body.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,8 +10,12 @@ class HomepageBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final subtitle = Theme.of(context).textTheme.subtitle1;
+    final subtitle = Theme.of(context)
+        .textTheme
+        .subtitle1
+        .copyWith(fontWeight: FontWeight.bold);
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Groups',
@@ -39,18 +42,9 @@ class HomepageBody extends StatelessWidget {
         // Render recently used barcodes
         Text('...'),
         Text('Tags', style: subtitle),
-        Consumer<TagProvider>(builder: (context, tagProvider, _) {
-          return TagList(
-            tags: tagProvider.tags.map((t) => t.uid).toList(),
-            onTap: (tag) => Navigator.of(context).pushNamedAndRemoveUntil(
-              SearchScreen.route,
-              (route) => false,
-              arguments: {
-                'tagFilters': [tag.uid]
-              },
-            ),
-          );
-        })
+        Consumer<TagProvider>(
+            builder: (context, tagProvider, _) =>
+                TagViewBody(tags: tagProvider.tags, readOnly: true))
       ],
     );
   }

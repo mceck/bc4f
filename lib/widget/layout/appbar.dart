@@ -22,27 +22,29 @@ class WrapWithExpandedAppbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      physics: ClampingScrollPhysics(),
-      child: Column(
-        children: [
-          ExpandedAppbar(
-            onGroupFilterChange: onGroupFilterChange,
-            onSearch: onSearch,
-            onTagFilterChange: onTagFilterChange,
-            subtitle: subtitle,
-            tagFilters: tagFilters,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(
-              left: kDefaultPadding,
-              top: kDefaultPadding,
-              right: kDefaultPadding,
+    return Column(
+      children: [
+        ExpandedAppbar(
+          onGroupFilterChange: onGroupFilterChange,
+          onSearch: onSearch,
+          onTagFilterChange: onTagFilterChange,
+          subtitle: subtitle,
+          tagFilters: tagFilters,
+        ),
+        Expanded(
+          child: SingleChildScrollView(
+            physics: ClampingScrollPhysics(),
+            child: Padding(
+              padding: const EdgeInsets.only(
+                left: kDefaultPadding,
+                top: kDefaultPadding,
+                right: kDefaultPadding,
+              ),
+              child: child,
             ),
-            child: child,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -70,10 +72,10 @@ class ExpandedAppbar extends StatelessWidget {
       child: Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.only(bottom: 25),
+            padding: const EdgeInsets.only(bottom: 22),
             child: Container(
               width: double.infinity,
-              height: size.height * 0.2,
+              height: size.height * 0.15,
               decoration: BoxDecoration(
                 borderRadius:
                     BorderRadius.vertical(bottom: Radius.circular(25)),
@@ -97,7 +99,7 @@ class ExpandedAppbar extends StatelessWidget {
           ),
           if (onSearch != null)
             Positioned(
-              bottom: 0,
+              bottom: 8,
               child: Container(
                 width: size.width - (kDefaultPadding * 2),
                 height: 50,
