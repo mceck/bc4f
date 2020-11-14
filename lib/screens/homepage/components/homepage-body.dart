@@ -42,7 +42,7 @@ class HomepageBody extends StatelessWidget {
           // TODO
           // Render recently used barcodes
           Text('...'),
-          Text('Tags'),
+          Text('Tags', style: subtitle),
           Consumer<TagProvider>(builder: (context, tagProvider, _) {
             return TagList(
               tags: tagProvider.tags.map((t) => t.uid).toList(),
