@@ -18,6 +18,10 @@ class GroupCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final fallbackImg = Container(
+      color: Colors.blue,
+      child: Center(child: Text(group.name)),
+    );
     return GestureDetector(
       onTap: () => Navigator.of(context).pushNamed(
         GroupDetail.route,
@@ -34,12 +38,9 @@ class GroupCard extends StatelessWidget {
                 flex: 2,
                 child: Image.network(
                   group.imgUrl ?? '',
-                  errorBuilder: (ctx, err, stack) {
-                    return Container(
-                      color: Colors.blue,
-                      child: Center(child: Text(group.name)),
-                    );
-                  },
+                  loadingBuilder: (ctx, child, progress) =>
+                      progress != null ? fallbackImg : child,
+                  errorBuilder: (ctx, error, stackTrace) => fallbackImg,
                 ),
               ),
               Flexible(

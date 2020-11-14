@@ -2,6 +2,7 @@ import 'package:bc4f/model/group.dart';
 import 'package:bc4f/service/barcode-service.dart';
 import 'package:bc4f/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:giphy_picker/giphy_picker.dart';
 
 class GroupFormBody extends StatefulWidget {
   final BarcodeGroup group;
@@ -79,19 +80,26 @@ class _GroupFormBodyState extends State<GroupFormBody> {
             ),
             Row(
               children: [
-                if (imgUrl.text.isNotEmpty)
-                  Image.network(
-                    imgUrl.text,
-                    width: 80,
-                  ),
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20),
-                    child: TextField(
-                      controller: imgUrl,
-                      decoration: InputDecoration(labelText: 'imgUrl'),
-                    ),
+                  child: TextField(
+                    controller: imgUrl,
+                    decoration: InputDecoration(labelText: 'imgUrl'),
                   ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.gif),
+                  onPressed: () {
+                    GiphyPicker.pickGif(
+                      context: context,
+                      apiKey: GIPHY_APIKEY,
+                      lang: GiphyLanguage.italian,
+                      showPreviewPage: false,
+                    ).then((gif) {
+                      setState(() {
+                        imgUrl.text = gif.images.original.url;
+                      });
+                    });
+                  },
                 ),
               ],
             ),

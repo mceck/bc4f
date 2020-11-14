@@ -1,6 +1,9 @@
 import 'package:bc4f/provider/group-provider.dart';
+import 'package:bc4f/provider/tag-provider.dart';
 import 'package:bc4f/screens/groups/group-card.dart';
+import 'package:bc4f/screens/search/search.dart';
 import 'package:bc4f/utils/constants.dart';
+import 'package:bc4f/widget/components/tags.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -36,12 +39,22 @@ class HomepageBody extends StatelessWidget {
             ),
           ),
           Text('Recently used', style: subtitle),
-          Text('...'),
           // TODO
           // Render recently used barcodes
-
-          // TODO
-          // Render tag list
+          Text('...'),
+          Text('Tags'),
+          Consumer<TagProvider>(builder: (context, tagProvider, _) {
+            return TagList(
+              tags: tagProvider.tags.map((t) => t.uid).toList(),
+              onTap: (tag) => Navigator.of(context).pushNamedAndRemoveUntil(
+                SearchScreen.route,
+                (route) => false,
+                arguments: {
+                  'tagFilters': [tag.uid]
+                },
+              ),
+            );
+          })
         ],
       ),
     );

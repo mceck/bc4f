@@ -92,8 +92,9 @@ class _EditableTagListState extends State<EditableTagList> {
 
 class TagList extends StatelessWidget {
   final List<String> tags;
+  final void Function(Tag) onTap;
 
-  const TagList({Key key, this.tags}) : super(key: key);
+  const TagList({Key key, this.tags, this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -106,10 +107,14 @@ class TagList extends StatelessWidget {
           (tagId) {
             final tag =
                 tagList.firstWhere((t) => t.uid == tagId, orElse: () => null);
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 5),
-              child:
-                  tag == null ? CircularProgressIndicator() : TagElem(tag: tag),
+            return GestureDetector(
+              onTap: () => onTap(tag),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5),
+                child: tag == null
+                    ? CircularProgressIndicator()
+                    : TagElem(tag: tag),
+              ),
             );
           },
         ).toList(),

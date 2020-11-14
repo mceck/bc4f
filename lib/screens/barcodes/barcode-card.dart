@@ -30,6 +30,11 @@ class BarcodeCard extends StatelessWidget {
     final nameVisual = barcode.name != null && barcode.name.isNotEmpty
         ? barcode.name
         : barcode.code ?? 'null';
+    final fallbackImg = BarcodeImage(
+      barcode.code ?? '',
+      barcode.type ?? bcLib.BarcodeType.CodeEAN13,
+      width: 160,
+    );
     return GestureDetector(
       onTap: () => Navigator.of(context).pushNamed(
         BarcodeView.route,
@@ -46,13 +51,9 @@ class BarcodeCard extends StatelessWidget {
                 flex: 3,
                 child: Image.network(
                   barcode.imgUrl ?? '',
-                  errorBuilder: (ctx, err, stack) {
-                    return BarcodeImage(
-                      barcode.code ?? '',
-                      barcode.type ?? bcLib.BarcodeType.CodeEAN13,
-                      width: 160,
-                    );
-                  },
+                  loadingBuilder: (ctx, child, progress) =>
+                      progress != null ? fallbackImg : child,
+                  errorBuilder: (ctx, error, stackTrace) => fallbackImg,
                 ),
               ),
               Flexible(
