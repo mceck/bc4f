@@ -1,7 +1,4 @@
 import 'package:bc4f/screens/barcodes/form/barcode-form.dart';
-import 'package:bc4f/utils/constants.dart';
-import 'package:bc4f/widget/components/barcode-image.dart';
-import 'package:bc4f/widget/components/tags.dart';
 import 'package:bc4f/widget/layout/scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:bc4f/model/barcode.dart';

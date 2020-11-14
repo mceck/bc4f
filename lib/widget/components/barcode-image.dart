@@ -6,7 +6,6 @@ import 'package:barcode/barcode.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:bc4f/utils/logger.dart';
 import 'package:bc4f/utils/fake-html.dart' if (dart.library.html) 'dart:html'
     as html;
 import 'package:bc4f/utils/fake-ui.dart' if (dart.library.html) 'dart:ui' as ui;

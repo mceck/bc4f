@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:bc4f/model/barcode.dart';
 part 'group.g.dart';
 
 @JsonSerializable()

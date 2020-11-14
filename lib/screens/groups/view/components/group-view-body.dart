@@ -1,11 +1,7 @@
 import 'package:bc4f/model/group.dart';
-import 'package:bc4f/screens/groups/detail/group-detail.dart';
-import 'package:bc4f/screens/groups/form/group-form.dart';
 import 'package:bc4f/screens/groups/group-card.dart';
-import 'package:bc4f/service/barcode-service.dart';
 import 'package:bc4f/utils/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 
 class GroupViewBody extends StatelessWidget {
   const GroupViewBody({
@@ -22,7 +18,7 @@ class GroupViewBody extends StatelessWidget {
       primary: false,
       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
         childAspectRatio: kDefaultGridCellAspectRatio,
-        maxCrossAxisExtent: kDefaultGridExtent,
+        maxCrossAxisExtent: kDefaultGridMaxExtent,
         crossAxisSpacing: kDefaultPadding,
         mainAxisSpacing: kDefaultPadding,
       ),

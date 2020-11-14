@@ -1,4 +1,3 @@
-import 'package:bc4f/widget/components/tags.dart';
 import 'package:bc4f/widget/layout/appbar.dart';
 import 'package:bc4f/widget/layout/bottom-navbar.dart';
 import 'package:flutter/material.dart';

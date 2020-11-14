@@ -1,6 +1,5 @@
 import 'package:bc4f/model/tag.dart';
 import 'package:bc4f/service/barcode-service.dart';
-import 'package:bc4f/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 

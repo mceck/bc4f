@@ -2,7 +2,6 @@ import 'package:bc4f/provider/group-provider.dart';
 import 'package:bc4f/provider/tag-provider.dart';
 import 'package:bc4f/screens/groups/group-card.dart';
 import 'package:bc4f/screens/search/search.dart';
-import 'package:bc4f/utils/constants.dart';
 import 'package:bc4f/widget/components/tags.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

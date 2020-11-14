@@ -9,7 +9,6 @@ import 'package:camera/camera.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_widgets/flutter_widgets.dart';
 
 export 'package:camera/camera.dart';
