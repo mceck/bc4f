@@ -64,52 +64,47 @@ class _GroupFormBodyState extends State<GroupFormBody> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(kDefaultPadding),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextField(
+          controller: name,
+          decoration: InputDecoration(labelText: 'name'),
+        ),
+        TextField(
+          controller: description,
+          decoration: InputDecoration(labelText: 'description'),
+        ),
+        Row(
           children: [
-            TextField(
-              controller: name,
-              decoration: InputDecoration(labelText: 'name'),
+            Expanded(
+              child: TextField(
+                controller: imgUrl,
+                decoration: InputDecoration(labelText: 'imgUrl'),
+              ),
             ),
-            TextField(
-              controller: description,
-              decoration: InputDecoration(labelText: 'description'),
+            IconButton(
+              icon: Icon(Icons.gif),
+              onPressed: () {
+                GiphyPicker.pickGif(
+                  context: context,
+                  apiKey: GIPHY_APIKEY,
+                  lang: GiphyLanguage.italian,
+                  showPreviewPage: false,
+                ).then((gif) {
+                  setState(() {
+                    imgUrl.text = gif.images.original.url;
+                  });
+                });
+              },
             ),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: imgUrl,
-                    decoration: InputDecoration(labelText: 'imgUrl'),
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.gif),
-                  onPressed: () {
-                    GiphyPicker.pickGif(
-                      context: context,
-                      apiKey: GIPHY_APIKEY,
-                      lang: GiphyLanguage.italian,
-                      showPreviewPage: false,
-                    ).then((gif) {
-                      setState(() {
-                        imgUrl.text = gif.images.original.url;
-                      });
-                    });
-                  },
-                ),
-              ],
-            ),
-            RaisedButton(
-              onPressed: save,
-              child: Text('Save'),
-            )
           ],
         ),
-      ),
+        RaisedButton(
+          onPressed: save,
+          child: Text('Save'),
+        )
+      ],
     );
   }
 }

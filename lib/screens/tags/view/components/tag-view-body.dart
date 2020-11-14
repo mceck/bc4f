@@ -17,13 +17,14 @@ class TagViewBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
+        shrinkWrap: true,
+        primary: false,
         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
           childAspectRatio: 4 / 2,
-          maxCrossAxisExtent: 300,
+          maxCrossAxisExtent: kDefaultGridMaxExtent,
           crossAxisSpacing: kDefaultPadding,
           mainAxisSpacing: kDefaultPadding,
         ),
-        shrinkWrap: true,
         itemCount: tags.length,
         itemBuilder: (ctx, idx) {
           final tag = tags[idx];

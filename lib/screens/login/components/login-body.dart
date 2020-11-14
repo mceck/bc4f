@@ -1,4 +1,5 @@
 import 'package:bc4f/service/firebase-service.dart';
+import 'package:bc4f/utils/prefs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:bc4f/screens/login/login.dart';
@@ -28,26 +29,31 @@ class _LoginBodyState extends State<LoginBody> {
   bool _rememberMe = false;
 
   @override
-  void didChangeDependencies() {
-    // autologin with mobile
-    AppStatus().authStorage?.readAll()?.then((keyStore) {
-      if (keyStore != null) {
-        final email = keyStore[KEYSTORE_EMAIL] ?? '';
-        final passwd = keyStore[KEYSTORE_PASSWORD] ?? '';
-        if (email.isNotEmpty && passwd.isNotEmpty) {
-          log.info('autologin $email');
-          loading = true;
-          FirebaseService.loginWithEmailAndPassword(email, passwd)
-              .catchError((error) {
-            setState(() {
-              _authError = 'Email o password errata';
-              _loading = false;
+  void initState() {
+    if (kIsWeb) {
+      // saved email on web
+      _emailCtrl.text = Prefs().instance.getString(KEYSTORE_EMAIL) ?? '';
+    } else {
+      // autologin with mobile
+      AppStatus().authStorage?.readAll()?.then((keyStore) {
+        if (keyStore != null) {
+          final email = keyStore[KEYSTORE_EMAIL] ?? '';
+          final passwd = keyStore[KEYSTORE_PASSWORD] ?? '';
+          if (email.isNotEmpty && passwd.isNotEmpty) {
+            log.info('autologin $email');
+            loading = true;
+            FirebaseService.loginWithEmailAndPassword(email, passwd)
+                .catchError((error) {
+              setState(() {
+                _authError = 'Email o password errata';
+                _loading = false;
+              });
             });
-          });
+          }
         }
-      }
-    });
-    super.didChangeDependencies();
+      });
+    }
+    super.initState();
   }
 
   @override
@@ -72,15 +78,19 @@ class _LoginBodyState extends State<LoginBody> {
       final passwd = _passwdCtrl.text;
       FirebaseService.loginWithEmailAndPassword(email, passwd).then((success) {
         loading = false;
-        if (rememberMe && !kIsWeb) {
-          AppStatus().authStorage?.write(
-                key: KEYSTORE_EMAIL,
-                value: email,
-              );
-          AppStatus().authStorage?.write(
-                key: KEYSTORE_PASSWORD,
-                value: passwd,
-              );
+        if (rememberMe) {
+          if (kIsWeb) {
+            Prefs().instance.setString(KEYSTORE_EMAIL, email);
+          } else {
+            AppStatus().authStorage?.write(
+                  key: KEYSTORE_EMAIL,
+                  value: email,
+                );
+            AppStatus().authStorage?.write(
+                  key: KEYSTORE_PASSWORD,
+                  value: passwd,
+                );
+          }
         }
       });
     } else {
@@ -167,7 +177,7 @@ class _LoginBodyState extends State<LoginBody> {
                       validator: (value) => _validate('password', value),
                     ),
                     SizedBox(height: 30),
-                    if (widget.mode == LoginMode.Login && !kIsWeb)
+                    if (widget.mode == LoginMode.Login)
                       CheckboxListTile(
                           controlAffinity: ListTileControlAffinity.leading,
                           title: Text('Remember me'),

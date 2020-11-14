@@ -21,21 +21,18 @@ class BarcodeViewBody extends StatelessWidget {
       controller: tabController,
       children: barcodes
           .map(
-            (barcode) => Padding(
-              padding: const EdgeInsets.all(kDefaultPadding),
-              child: Column(
-                children: [
-                  if (barcode.tags != null) TagList(tags: barcode.tags),
-                  Expanded(
-                    child: BarcodeImage(
-                      barcode.code ?? 'null',
-                      barcode.type,
-                      width: MediaQuery.of(context).size.width * 0.9,
-                    ),
+            (barcode) => Column(
+              children: [
+                if (barcode.tags != null) TagList(tags: barcode.tags),
+                Expanded(
+                  child: BarcodeImage(
+                    barcode.code ?? 'null',
+                    barcode.type,
+                    width: MediaQuery.of(context).size.width * 0.9,
                   ),
-                  Text(barcode.description ?? 'null'),
-                ],
-              ),
+                ),
+                Text(barcode.description ?? 'null'),
+              ],
             ),
           )
           .toList(),

@@ -37,9 +37,15 @@ class _EditableTagListState extends State<EditableTagList> {
         children: [
           Text('tags: '),
           IconButton(
-            icon: Icon(
-              Icons.add,
-              color: Colors.green,
+            icon: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(50),
+                color: Colors.white54,
+              ),
+              child: Icon(
+                Icons.add,
+                color: Colors.green[600],
+              ),
             ),
             onPressed: () {
               setState(() {
@@ -70,9 +76,15 @@ class _EditableTagListState extends State<EditableTagList> {
                     showIcon: false,
                   ),
                   IconButton(
-                      icon: Icon(
-                        Icons.cancel_outlined,
-                        color: Colors.red,
+                      icon: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          color: Colors.white54,
+                        ),
+                        child: Icon(
+                          Icons.cancel_outlined,
+                          color: Colors.red[700],
+                        ),
                       ),
                       onPressed: () {
                         setState(() {

@@ -13,7 +13,7 @@ class GroupForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Bc4fScaffold(
-      title: 'Group form',
+      title: Text('Group form'),
       body: GroupFormBody(group: group),
     );
   }

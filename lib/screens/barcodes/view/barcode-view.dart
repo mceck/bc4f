@@ -47,6 +47,7 @@ class _BarcodeViewState extends State<BarcodeView>
         BarcodeForm.route,
         arguments: {'barcode': widget.barcodes[tabController.index]},
       ),
+      withExtendedAppbar: false,
       body: BarcodeViewBody(
           tabController: tabController, barcodes: widget.barcodes),
     );

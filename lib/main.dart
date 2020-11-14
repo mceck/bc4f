@@ -1,6 +1,7 @@
 import 'package:bc4f/provider/barcode-provider.dart';
 import 'package:bc4f/provider/group-provider.dart';
 import 'package:bc4f/provider/tag-provider.dart';
+import 'package:bc4f/utils/prefs.dart';
 import 'package:flutter/material.dart';
 import 'package:bc4f/router/router.dart';
 import 'package:bc4f/widget/wrappers/is-auth.dart';
@@ -16,6 +17,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    // init local storage
+    Prefs();
     return FirebaseApplication(
       child: App(),
     );
@@ -42,7 +45,8 @@ class App extends StatelessWidget {
           title: 'Bc4f',
           theme: ThemeData(
             textTheme: TextTheme(subtitle1: TextStyle(fontSize: 18)),
-            primarySwatch: Colors.blue,
+            primarySwatch: Colors.red,
+            primaryColor: Colors.redAccent,
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
           onGenerateRoute: Routing.onGenerateRoute,

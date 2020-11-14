@@ -17,24 +17,23 @@ class GroupViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(kDefaultPadding),
-      child: GridView.builder(
-        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-          childAspectRatio: 4 / 3,
-          maxCrossAxisExtent: 330,
-          crossAxisSpacing: kDefaultPadding,
-          mainAxisSpacing: kDefaultPadding,
-        ),
-        itemCount: groups.length,
-        itemBuilder: (ctx, index) {
-          final group = groups[index];
-          return GroupCard(
-            group: group,
-            withSlideActions: true,
-          );
-        },
+    return GridView.builder(
+      shrinkWrap: true,
+      primary: false,
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+        childAspectRatio: kDefaultGridCellAspectRatio,
+        maxCrossAxisExtent: kDefaultGridExtent,
+        crossAxisSpacing: kDefaultPadding,
+        mainAxisSpacing: kDefaultPadding,
       ),
+      itemCount: groups.length,
+      itemBuilder: (ctx, index) {
+        final group = groups[index];
+        return GroupCard(
+          group: group,
+          withSlideActions: true,
+        );
+      },
     );
   }
 }

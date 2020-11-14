@@ -45,9 +45,8 @@ class _GroupDetailState extends State<GroupDetail> {
   Widget build(BuildContext context) {
     return Bc4fScaffold(
       onTagFilterChange: onTagFilterChange,
-      icon: Icon(Icons.group_work),
-      title: widget.group.name,
-      subtitle: widget.group.description,
+      title: Text(widget.group.name),
+      subtitle: Text(widget.group.description),
       actionEdit: () {
         log.info('edit group');
         Navigator.of(context).pushNamed(

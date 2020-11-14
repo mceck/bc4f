@@ -33,7 +33,7 @@ class BarcodeCard extends StatelessWidget {
     final fallbackImg = BarcodeImage(
       barcode.code ?? '',
       barcode.type ?? bcLib.BarcodeType.CodeEAN13,
-      width: 160,
+      width: 220,
     );
     return GestureDetector(
       onTap: () => Navigator.of(context).pushNamed(

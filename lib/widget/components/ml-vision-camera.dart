@@ -11,7 +11,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_widgets/flutter_widgets.dart';
-import 'package:path_provider/path_provider.dart';
 
 export 'package:camera/camera.dart';
 
@@ -61,7 +60,7 @@ class CameraMlVision<T> extends StatefulWidget {
 
 class CameraMlVisionState<T> extends State<CameraMlVision<T>>
     with WidgetsBindingObserver {
-  String _lastImage;
+  // String _lastImage;
   Key _visibilityKey = UniqueKey();
   CameraController _cameraController;
   ImageRotation _rotation;
@@ -101,18 +100,18 @@ class CameraMlVisionState<T> extends State<CameraMlVision<T>>
 
   Future<void> stop() async {
     if (_cameraController != null) {
-      if (_lastImage != null && File(_lastImage).existsSync()) {
-        await File(_lastImage).delete();
-      }
+      // if (_lastImage != null && File(_lastImage).existsSync()) {
+      //   await File(_lastImage).delete();
+      // }
 
-      Directory tempDir = await getTemporaryDirectory();
-      _lastImage = '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}';
-      try {
-        await _cameraController.initialize();
-        await _cameraController.takePicture(_lastImage);
-      } on PlatformException catch (e) {
-        debugPrint('$e');
-      }
+      // Directory tempDir = await getTemporaryDirectory();
+      // _lastImage = '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}';
+      // try {
+      //   await _cameraController.initialize();
+      //   await _cameraController.takePicture(_lastImage);
+      // } on PlatformException catch (e) {
+      //   debugPrint('$e');
+      // }
 
       await _stop(false);
     }
@@ -244,9 +243,9 @@ class CameraMlVisionState<T> extends State<CameraMlVision<T>>
     if (widget.onDispose != null) {
       widget.onDispose();
     }
-    if (_lastImage != null && File(_lastImage).existsSync()) {
-      File(_lastImage).delete();
-    }
+    // if (_lastImage != null && File(_lastImage).existsSync()) {
+    //   File(_lastImage).delete();
+    // }
     if (_cameraController != null) {
       _cameraController.dispose();
     }
@@ -275,7 +274,9 @@ class CameraMlVisionState<T> extends State<CameraMlVision<T>>
           ? CameraPreview(
               _cameraController,
             )
-          : _getPicture(),
+          : Center(
+              child: CircularProgressIndicator(),
+            ),
     );
 
     if (widget.overlayBuilder != null) {
@@ -335,14 +336,14 @@ class CameraMlVisionState<T> extends State<CameraMlVision<T>>
     }
   }
 
-  Widget _getPicture() {
-    if (_lastImage != null) {
-      final file = File(_lastImage);
-      if (file.existsSync()) {
-        return Image.file(file);
-      }
-    }
+  // Widget _getPicture() {
+  //   if (_lastImage != null) {
+  //     final file = File(_lastImage);
+  //     if (file.existsSync()) {
+  //       return Image.file(file);
+  //     }
+  //   }
 
-    return Container();
-  }
+  //   return Container();
+  // }
 }

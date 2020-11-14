@@ -59,73 +59,70 @@ class _TagFormBodyState extends State<TagFormBody> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(kDefaultPadding),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TextField(
-            controller: name,
-            decoration: InputDecoration(labelText: 'tag'),
-          ),
-          SizedBox(height: 20),
-          Row(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: color,
-                ),
-                width: 80,
-                height: 20,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextField(
+          controller: name,
+          decoration: InputDecoration(labelText: 'tag'),
+        ),
+        SizedBox(height: 20),
+        Row(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: color,
               ),
-              SizedBox(width: 30),
-              SizedBox(
-                height: 30,
-                child: FloatingActionButton(
-                    mini: true,
-                    child: Icon(
-                      Icons.color_lens,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        child: AlertDialog(
-                          title: const Text('Pick a color!'),
-                          content: SingleChildScrollView(
-                            child: ColorPicker(
-                              pickerColor: color,
-                              onColorChanged: (c) {
-                                setState(() {
-                                  color = c;
-                                });
-                              },
-                              showLabel: true,
-                              pickerAreaHeightPercent: 0.8,
-                            ),
+              width: 80,
+              height: 20,
+            ),
+            SizedBox(width: 30),
+            SizedBox(
+              height: 30,
+              child: FloatingActionButton(
+                  mini: true,
+                  child: Icon(
+                    Icons.color_lens,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      child: AlertDialog(
+                        title: const Text('Pick a color!'),
+                        content: SingleChildScrollView(
+                          child: ColorPicker(
+                            pickerColor: color,
+                            onColorChanged: (c) {
+                              setState(() {
+                                color = c;
+                              });
+                            },
+                            showLabel: true,
+                            pickerAreaHeightPercent: 0.8,
                           ),
-                          actions: <Widget>[
-                            FlatButton(
-                              child: const Text('Ok'),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
                         ),
-                      );
-                    }),
-              )
-            ],
-          ),
-          SizedBox(height: 20),
-          RaisedButton(
-            onPressed: save,
-            child: Text('Save'),
-          )
-        ],
-      ),
+                        actions: <Widget>[
+                          FlatButton(
+                            child: const Text('Ok'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+            )
+          ],
+        ),
+        SizedBox(height: 20),
+        RaisedButton(
+          onPressed: save,
+          child: Text('Save'),
+        )
+      ],
     );
   }
 }

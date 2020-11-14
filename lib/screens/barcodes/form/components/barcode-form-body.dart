@@ -82,94 +82,91 @@ class _BarcodeFormBodyState extends State<BarcodeFormBody> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(kDefaultPadding),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: code,
-                  decoration: InputDecoration(labelText: 'code'),
-                ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: code,
+                decoration: InputDecoration(labelText: 'code'),
               ),
-              if (!kIsWeb)
-                IconButton(
-                  icon: Icon(Icons.photo_camera),
-                  onPressed: () {
-                    log.info('open scanner');
-                    scanBarcode(context).then((value) {
-                      log.info('got value $value from scanner');
-                      setState(() {
-                        code.text = value.code;
-                        _barcode.type = value.type;
-                      });
-                    });
-                  },
-                ),
-            ],
-          ),
-          SelectList(
-            list: bcLib.BarcodeType.values
-                .map((t) => t.toString().split('.')[1])
-                .toList(),
-            onChanged: (val) {
-              setState(() {
-                _barcode.type = bcLib.BarcodeType.values
-                    .firstWhere((t) => t.toString().split('.')[1] == val);
-              });
-            },
-            value: _barcode.type.toString().split('.')[1],
-          ),
-          TextField(
-            controller: name,
-            decoration: InputDecoration(labelText: 'name'),
-          ),
-          TextField(
-            controller: description,
-            decoration: InputDecoration(labelText: 'description'),
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: imgUrl,
-                  decoration: InputDecoration(labelText: 'imgUrl'),
-                ),
-              ),
+            ),
+            if (!kIsWeb)
               IconButton(
-                icon: Icon(Icons.gif),
+                icon: Icon(Icons.photo_camera),
                 onPressed: () {
-                  GiphyPicker.pickGif(
-                    context: context,
-                    apiKey: GIPHY_APIKEY,
-                    lang: GiphyLanguage.italian,
-                    showPreviewPage: false,
-                  ).then((gif) {
+                  log.info('open scanner');
+                  scanBarcode(context).then((value) {
+                    log.info('got value $value from scanner');
                     setState(() {
-                      imgUrl.text = gif.images.original.url;
+                      code.text = value.code;
+                      _barcode.type = value.type;
                     });
                   });
                 },
               ),
-            ],
-          ),
-          EditableTagList(
-            onTagFilterChange: (filter) {
-              setState(() {
-                _barcode.tags = filter;
-              });
-            },
-            tags: _barcode.tags,
-          ),
-          RaisedButton(
-            onPressed: save,
-            child: Text('Save'),
-          ),
-        ],
-      ),
+          ],
+        ),
+        SelectList(
+          list: bcLib.BarcodeType.values
+              .map((t) => t.toString().split('.')[1])
+              .toList(),
+          onChanged: (val) {
+            setState(() {
+              _barcode.type = bcLib.BarcodeType.values
+                  .firstWhere((t) => t.toString().split('.')[1] == val);
+            });
+          },
+          value: _barcode.type.toString().split('.')[1],
+        ),
+        TextField(
+          controller: name,
+          decoration: InputDecoration(labelText: 'name'),
+        ),
+        TextField(
+          controller: description,
+          decoration: InputDecoration(labelText: 'description'),
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: imgUrl,
+                decoration: InputDecoration(labelText: 'imgUrl'),
+              ),
+            ),
+            IconButton(
+              icon: Icon(Icons.gif),
+              onPressed: () {
+                GiphyPicker.pickGif(
+                  context: context,
+                  apiKey: GIPHY_APIKEY,
+                  lang: GiphyLanguage.italian,
+                  showPreviewPage: false,
+                ).then((gif) {
+                  setState(() {
+                    imgUrl.text = gif.images.original.url;
+                  });
+                });
+              },
+            ),
+          ],
+        ),
+        EditableTagList(
+          onTagFilterChange: (filter) {
+            setState(() {
+              _barcode.tags = filter;
+            });
+          },
+          tags: _barcode.tags,
+        ),
+        RaisedButton(
+          onPressed: save,
+          child: Text('Save'),
+        ),
+      ],
     );
   }
 }
