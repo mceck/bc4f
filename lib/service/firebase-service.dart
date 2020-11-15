@@ -1,5 +1,7 @@
 import 'package:bc4f/utils/app-status.dart';
+import 'package:bc4f/utils/constants.dart';
 import 'package:bc4f/utils/logger.dart';
+import 'package:bc4f/utils/prefs.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class FirebaseService {
@@ -17,6 +19,8 @@ class FirebaseService {
   static Future<void> logout() async {
     await FirebaseAuth.instance.signOut();
     AppStatus().loggedUser = null;
+    AppStatus().authStorage?.deleteAll();
+    Prefs().instance.remove(KEYSTORE_EMAIL);
   }
 
   static Future<void> _login(
