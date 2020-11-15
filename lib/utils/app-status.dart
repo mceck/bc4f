@@ -20,7 +20,7 @@ class AppStatus {
 
   User loggedUser;
   bool offlineMode = false;
-  Function toggleOffline;
+  Function refreshAuthState; // mammamia che brutto modo di refreshare il login
 
   Uuid uuid = Uuid();
 
@@ -32,9 +32,15 @@ class AppStatus {
     await Provider.of<RecentBarcodeProvider>(context, listen: false)?.close();
 
     offlineMode = false;
-    if (toggleOffline != null) toggleOffline();
-    toggleOffline = null;
+    if (refreshAuthState != null) refreshAuthState();
     OfflineService().dispose();
+  }
+
+  Future<void> saveProvidersToLocal() async {
+    final context = navKey?.currentState?.overlay?.context;
+    await Provider.of<BarcodeProvider>(context, listen: false)?.saveToLocal();
+    await Provider.of<GroupProvider>(context, listen: false)?.saveToLocal();
+    await Provider.of<TagProvider>(context, listen: false)?.saveToLocal();
   }
 
   static final AppStatus _singleton = AppStatus._internal();

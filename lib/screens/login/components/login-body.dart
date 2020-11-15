@@ -14,10 +14,8 @@ class LoginBody extends StatefulWidget {
 
   final LoginMode mode;
   final void Function(LoginMode) onSetMode;
-  final Function toggleOffline;
 
-  const LoginBody({Key key, this.mode, this.onSetMode, this.toggleOffline})
-      : super(key: key);
+  const LoginBody({Key key, this.mode, this.onSetMode}) : super(key: key);
 
   @override
   _LoginBodyState createState() => _LoginBodyState();
@@ -197,24 +195,7 @@ class _LoginBodyState extends State<LoginBody> {
                       child: Icon(Icons.send),
                     ),
                     SizedBox(height: 30),
-                    FlatButton(
-                      onPressed: () {
-                        setState(() {
-                          if (widget.mode == LoginMode.Login)
-                            widget.onSetMode(LoginMode.Signup);
-                          else
-                            widget.onSetMode(LoginMode.Login);
-                          resetForm();
-                        });
-                      },
-                      child: Text(
-                        widget.mode == LoginMode.Login
-                            ? 'Registrati'
-                            : 'Signin',
-                        style: TextStyle(color: primaryColor),
-                      ),
-                    ),
-                    if (widget.toggleOffline != null)
+                    if (AppStatus().refreshAuthState != null)
                       FlatButton(
                         child: Text(
                           'Use offline',
@@ -223,8 +204,7 @@ class _LoginBodyState extends State<LoginBody> {
                         onPressed: () {
                           OfflineService().init();
                           AppStatus().offlineMode = true;
-                          AppStatus().toggleOffline = widget.toggleOffline;
-                          widget.toggleOffline();
+                          AppStatus().refreshAuthState();
                         },
                       ),
                     Text(

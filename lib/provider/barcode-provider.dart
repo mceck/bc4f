@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:bc4f/model/barcode.dart';
 import 'package:bc4f/service/barcode-service.dart';
+import 'package:bc4f/utils/constants.dart';
+import 'package:bc4f/utils/prefs.dart';
 import 'package:flutter/material.dart';
 
 class BarcodeProvider with ChangeNotifier {
@@ -18,6 +21,12 @@ class BarcodeProvider with ChangeNotifier {
         barcodes = snap;
         notifyListeners();
       });
+  }
+
+  Future<void> saveToLocal() async {
+    final list = barcodes.map((b) => b.toJson()).toList();
+    final jsonStr = json.encode(list);
+    Prefs().instance.setString(LOCALSTORE_BARCODES, jsonStr);
   }
 
   Future<void> close() async {

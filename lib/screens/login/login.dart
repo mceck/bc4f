@@ -7,10 +7,6 @@ enum LoginMode {
 }
 
 class LoginScreen extends StatefulWidget {
-  final Function toggleOffline;
-
-  const LoginScreen({Key key, this.toggleOffline}) : super(key: key);
-
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -33,13 +29,12 @@ class _LoginScreenState extends State<LoginScreen> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           actions: <Widget>[
-            IconButton(
+            FlatButton.icon(
                 icon: Icon(
-                  _mode == LoginMode.Login
-                      ? Icons.person_add
-                      : Icons.account_circle,
+                  _mode == LoginMode.Login ? Icons.person_add : Icons.login,
                   color: primaryColor,
                 ),
+                label: Text(_mode == LoginMode.Login ? 'Signup' : 'Login'),
                 onPressed: () {
                   onSetMode(_mode == LoginMode.Login
                       ? LoginMode.Signup
@@ -50,7 +45,6 @@ class _LoginScreenState extends State<LoginScreen> {
         body: LoginBody(
           mode: _mode,
           onSetMode: onSetMode,
-          toggleOffline: widget.toggleOffline,
         ),
       ),
     );

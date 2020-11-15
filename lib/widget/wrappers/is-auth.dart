@@ -17,24 +17,38 @@ class _IsAuthState extends State<IsAuth> {
   final authStream = FirebaseAuth.instance.authStateChanges();
 
   @override
+  void initState() {
+    AppStatus().refreshAuthState = () => setState(() {});
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    AppStatus().refreshAuthState = null;
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return StreamBuilder<User>(
-        stream: authStream,
-        builder: (ctx, snapshot) {
-          log.info('auth changed ${snapshot.data}');
-          if (snapshot.connectionState == ConnectionState.waiting)
-            return MaterialApp(
-              home: Scaffold(
-                body: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ),
-            );
-          if (snapshot.hasData || AppStatus().offlineMode) {
-            AppStatus().loggedUser = snapshot.data;
-            return widget.child;
-          }
-          return LoginScreen(toggleOffline: () => setState(() {}));
-        });
+    return AppStatus().offlineMode
+        ? widget.child
+        : StreamBuilder<User>(
+            stream: authStream,
+            builder: (ctx, snapshot) {
+              log.info('auth changed ${snapshot.data}');
+              if (snapshot.connectionState == ConnectionState.waiting)
+                return MaterialApp(
+                  home: Scaffold(
+                    body: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+                );
+              if (snapshot.hasData) {
+                AppStatus().loggedUser = snapshot.data;
+                return widget.child;
+              }
+              return LoginScreen();
+            });
   }
 }
