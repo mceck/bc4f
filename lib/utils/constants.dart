@@ -5,7 +5,7 @@ const String LOCALSTORE_TAGS = 'store-tags';
 const String LOCALSTORE_GROUPS = 'store-groups';
 const String LOCALSTORE_BARCODES = 'store-barcodes';
 
-const String GIPHY_APIKEY = 'ZCCDz7gF6q7hl4uXfB930X9gvrXgGWEt';
+const String GIPHY_APIKEY = 'insert-api-key';
 
 const double kDefaultPadding = 15;
 
