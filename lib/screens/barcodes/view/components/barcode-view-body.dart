@@ -1,4 +1,5 @@
 import 'package:bc4f/model/barcode.dart';
+import 'package:bc4f/utils/constants.dart';
 import 'package:bc4f/widget/components/barcode-image.dart';
 import 'package:bc4f/widget/components/tags.dart';
 import 'package:flutter/material.dart';
@@ -19,18 +20,43 @@ class BarcodeViewBody extends StatelessWidget {
       controller: tabController,
       children: barcodes
           .map(
-            (barcode) => Column(
-              children: [
-                if (barcode.tags != null) TagList(tags: barcode.tags),
-                Expanded(
-                  child: BarcodeImage(
-                    barcode.code ?? 'null',
-                    barcode.type,
-                    width: MediaQuery.of(context).size.width * 0.9,
+            (barcode) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+              child: Column(
+                children: [
+                  if (barcode.name != null)
+                    Text(
+                      barcode.name,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline4
+                          .copyWith(color: Colors.black),
+                    ),
+                  Text(
+                    barcode.description ?? 'null',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline5
+                        .copyWith(color: Colors.grey[850]),
                   ),
-                ),
-                Text(barcode.description ?? 'null'),
-              ],
+                  SizedBox(height: kDefaultPadding * 2),
+                  Expanded(
+                    child: BarcodeImage(
+                      barcode.code ?? 'null',
+                      barcode.type,
+                      width: MediaQuery.of(context).size.width * 0.9,
+                    ),
+                  ),
+                  if (barcode.tags != null)
+                    DefaultTextStyle(
+                      child: TagList(tags: barcode.tags),
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline5
+                          .copyWith(color: Colors.white),
+                    ),
+                ],
+              ),
             ),
           )
           .toList(),

@@ -1,4 +1,5 @@
 import 'package:bc4f/provider/tag-provider.dart';
+import 'package:bc4f/utils/constants.dart';
 import 'package:bc4f/widget/components/select-list.dart';
 import 'package:flutter/material.dart';
 import 'package:bc4f/model/tag.dart';
@@ -159,7 +160,8 @@ class TagElem extends StatelessWidget {
           Radius.circular(10),
         ),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+      padding:
+          const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: 3),
       child: Text(
         tag?.name,
         style: TextStyle(color: Colors.white),
