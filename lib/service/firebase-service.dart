@@ -18,9 +18,13 @@ class FirebaseService {
 
   static Future<void> logout() async {
     AppStatus().loggedUser = null;
-    await AppStatus().authStorage?.deleteAll();
-    await Prefs().instance?.remove(KEYSTORE_EMAIL);
-    AppStatus().resetProviders();
+    try {
+      await AppStatus().authStorage?.deleteAll();
+      await Prefs().instance?.remove(KEYSTORE_EMAIL);
+      await AppStatus().resetProviders();
+    } catch (e) {
+      log.severe(e);
+    }
     await FirebaseAuth.instance.signOut();
   }
 
