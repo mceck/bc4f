@@ -1,5 +1,6 @@
 import 'package:barcode/barcode.dart' as bcLib;
 import 'package:bc4f/model/barcode.dart';
+import 'package:bc4f/provider/group-provider.dart';
 import 'package:bc4f/service/barcode-service.dart';
 import 'package:bc4f/utils/constants.dart';
 import 'package:bc4f/utils/logger.dart';
@@ -9,6 +10,7 @@ import 'package:bc4f/widget/components/tags.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:giphy_picker/giphy_picker.dart';
+import 'package:provider/provider.dart';
 
 class BarcodeFormBody extends StatefulWidget {
   const BarcodeFormBody({
@@ -27,6 +29,8 @@ class _BarcodeFormBodyState extends State<BarcodeFormBody> {
   TextEditingController name;
   TextEditingController description;
   TextEditingController imgUrl;
+
+  String error;
 
   Barcode _barcode;
 
@@ -67,10 +71,20 @@ class _BarcodeFormBodyState extends State<BarcodeFormBody> {
   }
 
   bool validate() {
+    bool ret = true;
     updateForm();
-    return _barcode.group != null &&
-        _barcode.group.isNotEmpty &&
-        _barcode.code.isNotEmpty;
+    setState(() {
+      error = '';
+      if (_barcode.group == null || _barcode.group.isEmpty) {
+        ret = false;
+        error += 'group required';
+      }
+      if (_barcode.code == null || _barcode.code.isEmpty) {
+        ret = false;
+        error += '${error.isEmpty ? '' : ', '}code required';
+      }
+    });
+    return ret;
   }
 
   void save() {
@@ -82,6 +96,9 @@ class _BarcodeFormBodyState extends State<BarcodeFormBody> {
 
   @override
   Widget build(BuildContext context) {
+    final errorStyle =
+        Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.red);
+    final allgroups = Provider.of<GroupProvider>(context, listen: false).groups;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -110,6 +127,7 @@ class _BarcodeFormBodyState extends State<BarcodeFormBody> {
           ],
         ),
         SelectList(
+          hint: Text('type'),
           list: bcLib.BarcodeType.values
               .map((t) => t.toString().split('.')[1])
               .toList(),
@@ -128,6 +146,25 @@ class _BarcodeFormBodyState extends State<BarcodeFormBody> {
         TextField(
           controller: description,
           decoration: InputDecoration(labelText: 'description'),
+        ),
+        Row(
+          children: [
+            Text('Group:'),
+            Padding(
+              padding: const EdgeInsets.only(left: kDefaultPadding),
+              child: SelectList(
+                list: allgroups.map((g) => g.uid).toList(),
+                display: (id) =>
+                    Text(allgroups.firstWhere((g) => g.uid == id).name),
+                onChanged: (val) {
+                  setState(() {
+                    _barcode.group = val;
+                  });
+                },
+                value: _barcode.group,
+              ),
+            ),
+          ],
         ),
         Row(
           children: [
@@ -162,9 +199,22 @@ class _BarcodeFormBodyState extends State<BarcodeFormBody> {
           },
           tags: _barcode.tags,
         ),
-        RaisedButton(
-          onPressed: save,
-          child: Text('Save'),
+        SizedBox(height: kDefaultPadding * 2),
+        Row(
+          children: [
+            RaisedButton(
+              onPressed: save,
+              child: Text('Save'),
+            ),
+            if (error != null)
+              Padding(
+                padding: const EdgeInsets.only(left: kDefaultPadding),
+                child: Text(
+                  error,
+                  style: errorStyle,
+                ),
+              )
+          ],
         ),
       ],
     );

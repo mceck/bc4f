@@ -39,11 +39,7 @@ class WrapWithExpandedAppbar extends StatelessWidget {
           child: SingleChildScrollView(
             physics: ClampingScrollPhysics(),
             child: Padding(
-              padding: const EdgeInsets.only(
-                left: kDefaultPadding,
-                top: kDefaultPadding,
-                right: kDefaultPadding,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
               child: child,
             ),
           ),

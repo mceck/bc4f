@@ -18,6 +18,7 @@ class _GroupFormBodyState extends State<GroupFormBody> {
   TextEditingController name;
   TextEditingController description;
   TextEditingController imgUrl;
+  String error;
 
   @override
   void initState() {
@@ -53,7 +54,16 @@ class _GroupFormBodyState extends State<GroupFormBody> {
 
   bool validate() {
     updateForm();
-    return _group.name.isNotEmpty;
+    setState(() {
+      error = null;
+    });
+    if (_group.name.isEmpty) {
+      setState(() {
+        error = 'name required';
+      });
+      return false;
+    }
+    return true;
   }
 
   void save() {
@@ -64,6 +74,8 @@ class _GroupFormBodyState extends State<GroupFormBody> {
 
   @override
   Widget build(BuildContext context) {
+    final errorStyle =
+        Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.red);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -100,10 +112,23 @@ class _GroupFormBodyState extends State<GroupFormBody> {
             ),
           ],
         ),
-        RaisedButton(
-          onPressed: save,
-          child: Text('Save'),
-        )
+        SizedBox(height: kDefaultPadding * 2),
+        Row(
+          children: [
+            RaisedButton(
+              onPressed: save,
+              child: Text('Save'),
+            ),
+            if (error != null)
+              Padding(
+                padding: const EdgeInsets.only(left: kDefaultPadding),
+                child: Text(
+                  error,
+                  style: errorStyle,
+                ),
+              )
+          ],
+        ),
       ],
     );
   }

@@ -1,5 +1,6 @@
 import 'package:bc4f/model/tag.dart';
 import 'package:bc4f/service/barcode-service.dart';
+import 'package:bc4f/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
@@ -18,6 +19,7 @@ class TagFormBody extends StatefulWidget {
 class _TagFormBodyState extends State<TagFormBody> {
   TextEditingController name;
   Color color;
+  String error;
 
   Tag _tag;
 
@@ -46,8 +48,17 @@ class _TagFormBodyState extends State<TagFormBody> {
   }
 
   bool validate() {
+    setState(() {
+      error = null;
+    });
     updateForm();
-    return _tag.name.isNotEmpty;
+    if (_tag.name.isEmpty) {
+      setState(() {
+        error = 'name required';
+      });
+      return false;
+    }
+    return true;
   }
 
   void save() {
@@ -58,6 +69,8 @@ class _TagFormBodyState extends State<TagFormBody> {
 
   @override
   Widget build(BuildContext context) {
+    final errorStyle =
+        Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.red);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -117,10 +130,23 @@ class _TagFormBodyState extends State<TagFormBody> {
           ],
         ),
         SizedBox(height: 20),
-        RaisedButton(
-          onPressed: save,
-          child: Text('Save'),
-        )
+        SizedBox(height: kDefaultPadding * 2),
+        Row(
+          children: [
+            RaisedButton(
+              onPressed: save,
+              child: Text('Save'),
+            ),
+            if (error != null)
+              Padding(
+                padding: const EdgeInsets.only(left: kDefaultPadding),
+                child: Text(
+                  error,
+                  style: errorStyle,
+                ),
+              )
+          ],
+        ),
       ],
     );
   }
