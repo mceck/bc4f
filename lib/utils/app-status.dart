@@ -32,7 +32,6 @@ class AppStatus {
     await Provider.of<RecentBarcodeProvider>(context, listen: false)?.close();
 
     offlineMode = false;
-    if (refreshAuthState != null) refreshAuthState();
     OfflineService().dispose();
   }
 

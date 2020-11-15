@@ -17,16 +17,20 @@ class FirebaseService {
   }
 
   static Future<void> logout() async {
+    final isOffline = AppStatus().offlineMode;
     try {
+      await AppStatus().resetProviders();
       await AppStatus().authStorage?.deleteAll();
       // await Prefs().instance?.remove(KEYSTORE_EMAIL);
-      await AppStatus().resetProviders();
     } catch (e) {
       log.warning('Error logout');
       log.severe(e);
     }
     AppStatus().loggedUser = null;
-    await FirebaseAuth.instance.signOut();
+    if (isOffline && AppStatus().refreshAuthState != null)
+      AppStatus().refreshAuthState();
+    else
+      await FirebaseAuth.instance.signOut();
   }
 
   static Future<void> _login(
