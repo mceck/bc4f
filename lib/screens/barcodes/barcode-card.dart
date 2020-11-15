@@ -3,6 +3,7 @@ import 'package:bc4f/model/barcode.dart';
 import 'package:bc4f/screens/barcodes/form/barcode-form.dart';
 import 'package:bc4f/screens/barcodes/view/barcode-view.dart';
 import 'package:bc4f/service/barcode-service.dart';
+import 'package:bc4f/utils/constants.dart';
 import 'package:bc4f/widget/components/barcode-image.dart';
 import 'package:bc4f/widget/components/tags.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ class BarcodeCard extends StatelessWidget {
   final bool withSlideActions;
   final bool showGroup;
   final bool showTags;
+  final bool showName;
 
   const BarcodeCard({
     Key key,
@@ -22,6 +24,7 @@ class BarcodeCard extends StatelessWidget {
     this.withSlideActions = false,
     this.showGroup = false,
     this.showTags = true,
+    this.showName = true,
   }) : super(key: key);
 
   @override
@@ -49,20 +52,25 @@ class BarcodeCard extends StatelessWidget {
             children: [
               Expanded(
                 flex: 3,
-                child: Image.network(
-                  barcode.imgUrl ?? '',
-                  loadingBuilder: (ctx, child, progress) =>
-                      progress != null ? fallbackImg : child,
-                  errorBuilder: (ctx, error, stackTrace) => fallbackImg,
+                child: Padding(
+                  padding: const EdgeInsets.all(kDefaultPadding),
+                  child: Image.network(
+                    barcode.imgUrl ?? '',
+                    loadingBuilder: (ctx, child, progress) =>
+                        progress != null ? fallbackImg : child,
+                    errorBuilder: (ctx, error, stackTrace) => fallbackImg,
+                  ),
                 ),
               ),
               Flexible(
                 flex: 2,
                 child: ListTile(
-                  title: Text(
-                    nameVisual,
-                    textAlign: TextAlign.center,
-                  ),
+                  title: showName
+                      ? Text(
+                          nameVisual,
+                          textAlign: TextAlign.center,
+                        )
+                      : null,
                   subtitle: Column(
                     children: [
                       Text(barcode.description ?? 'null'),

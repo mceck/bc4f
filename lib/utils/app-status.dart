@@ -1,5 +1,6 @@
 import 'package:bc4f/provider/barcode-provider.dart';
 import 'package:bc4f/provider/group-provider.dart';
+import 'package:bc4f/provider/recent-barcode-provider.dart';
 import 'package:bc4f/provider/tag-provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -19,9 +20,10 @@ class AppStatus {
 
   Future<void> resetProviders() async {
     final context = navKey?.currentState?.overlay?.context;
-    await Provider.of<BarcodeProvider>(context, listen: false).close();
-    await Provider.of<GroupProvider>(context, listen: false).close();
-    await Provider.of<TagProvider>(context, listen: false).close();
+    await Provider.of<BarcodeProvider>(context, listen: false)?.close();
+    await Provider.of<GroupProvider>(context, listen: false)?.close();
+    await Provider.of<TagProvider>(context, listen: false)?.close();
+    await Provider.of<RecentBarcodeProvider>(context, listen: false)?.close();
   }
 
   static final AppStatus _singleton = AppStatus._internal();

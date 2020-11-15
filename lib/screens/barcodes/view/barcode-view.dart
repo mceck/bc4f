@@ -1,7 +1,9 @@
+import 'package:bc4f/provider/recent-barcode-provider.dart';
 import 'package:bc4f/screens/barcodes/form/barcode-form.dart';
 import 'package:bc4f/widget/layout/scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:bc4f/model/barcode.dart';
+import 'package:provider/provider.dart';
 
 import 'components/barcode-view-body.dart';
 
@@ -27,6 +29,10 @@ class _BarcodeViewState extends State<BarcodeView>
         initialIndex: widget.startIdx,
         length: widget.barcodes.length,
         vsync: this);
+
+    // update recent list on popup
+    Provider.of<RecentBarcodeProvider>(context, listen: false)
+        .pushRecent(widget.barcodes[widget.startIdx]);
 
     super.initState();
   }

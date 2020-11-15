@@ -1,5 +1,6 @@
 import 'package:bc4f/provider/barcode-provider.dart';
 import 'package:bc4f/provider/group-provider.dart';
+import 'package:bc4f/provider/recent-barcode-provider.dart';
 import 'package:bc4f/provider/tag-provider.dart';
 import 'package:bc4f/utils/prefs.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,7 @@ class App extends StatelessWidget {
           ChangeNotifierProvider(create: (ctx) => TagProvider()),
           ChangeNotifierProvider(create: (ctx) => BarcodeProvider()),
           ChangeNotifierProvider(create: (ctx) => GroupProvider()),
+          ChangeNotifierProvider(create: (ctx) => RecentBarcodeProvider()),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

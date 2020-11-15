@@ -1,5 +1,7 @@
 import 'package:bc4f/provider/group-provider.dart';
+import 'package:bc4f/provider/recent-barcode-provider.dart';
 import 'package:bc4f/provider/tag-provider.dart';
+import 'package:bc4f/screens/barcodes/barcode-card.dart';
 import 'package:bc4f/screens/barcodes/form/barcode-form.dart';
 import 'package:bc4f/screens/groups/form/group-form.dart';
 import 'package:bc4f/screens/groups/group-card.dart';
@@ -59,7 +61,7 @@ class HomepageBody extends StatelessWidget {
                   .map(
                     (group) => SizedBox(
                       width: 200,
-                      height: 200,
+                      height: 180,
                       child: GroupCard(group: group),
                     ),
                   )
@@ -69,9 +71,26 @@ class HomepageBody extends StatelessWidget {
         ),
         SizedBox(height: kDefaultPadding * 2),
         Text('Recently used', style: subtitle),
-        // TODO
-        // Render recently used barcodes
-        Text('... coming soon ...'),
+        Consumer<RecentBarcodeProvider>(
+          builder: (ctx, recentProvider, _) =>
+              recentProvider.barcodes.length > 0
+                  ? SizedBox(
+                      height: 180,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: recentProvider.barcodes.length,
+                        itemBuilder: (ctx, index) => SizedBox(
+                          width: 200,
+                          child: BarcodeCard(
+                            barcodes: recentProvider.barcodes,
+                            index: index,
+                            showName: false,
+                          ),
+                        ),
+                      ),
+                    )
+                  : Text('No recent barcodes to show'),
+        ),
         SizedBox(height: kDefaultPadding * 2),
         Row(
           children: [
