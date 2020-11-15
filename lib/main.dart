@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 
 void main() {
   // init local storage
+  WidgetsFlutterBinding.ensureInitialized();
   Prefs();
   AppStatus();
   runApp(MyApp());
