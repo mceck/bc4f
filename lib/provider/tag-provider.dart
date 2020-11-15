@@ -15,7 +15,7 @@ class TagProvider with ChangeNotifier {
   void load() {
     if (subs == null)
       subs = BarcodeService.streamTags().listen((snap) {
-        tags = snap.docs.map((doc) => Tag.fromJson(doc.data())).toList();
+        tags = snap;
         notifyListeners();
       });
   }

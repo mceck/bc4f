@@ -12,8 +12,8 @@ class FirebaseService {
 
   static Future<void> signupWithEmailAndPassword(
       String email, String password) {
-    // TODO implement
-    throw UnimplementedError();
+    return FirebaseAuth.instance
+        .createUserWithEmailAndPassword(email: email, password: password);
   }
 
   static Future<void> logout() async {

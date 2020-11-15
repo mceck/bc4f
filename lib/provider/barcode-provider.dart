@@ -15,8 +15,7 @@ class BarcodeProvider with ChangeNotifier {
   void load() {
     if (subs == null)
       subs = BarcodeService.streamBarcodes().listen((snap) {
-        barcodes =
-            snap.docs.map((doc) => Barcode.fromJson(doc.data())).toList();
+        barcodes = snap;
         notifyListeners();
       });
   }

@@ -3,12 +3,14 @@ import 'dart:math';
 import 'package:bc4f/model/barcode.dart';
 import 'package:bc4f/model/group.dart';
 import 'package:bc4f/model/tag.dart';
+import 'package:bc4f/service/offline-service.dart';
 import 'package:bc4f/utils/app-status.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bc4f/utils/logger.dart';
 
 class BarcodeService {
-  static Stream<QuerySnapshot> streamGroups() {
+  static Stream<List<BarcodeGroup>> streamGroups() {
+    if (AppStatus().offlineMode) return OfflineService().streamGroups();
     final useruid = AppStatus().loggedUser.uid;
     log.info('stream all groups for user $useruid');
     final collection = FirebaseFirestore.instance
@@ -16,10 +18,12 @@ class BarcodeService {
         .where('user', isEqualTo: useruid)
         .orderBy('order');
     log.info('collection $collection');
-    return collection.snapshots();
+    return collection.snapshots().map((snap) =>
+        snap.docs.map((doc) => BarcodeGroup.fromJson(doc.data())).toList());
   }
 
   static Future<void> saveGroup(BarcodeGroup group) {
+    if (AppStatus().offlineMode) return OfflineService().saveGroup(group);
     final isNew = (group.uid == null);
     final data = group.toJson();
     DocumentReference doc;
@@ -35,6 +39,7 @@ class BarcodeService {
   }
 
   static Future<void> deleteGroup(String uid) async {
+    if (AppStatus().offlineMode) return OfflineService().deleteGroup(uid);
     final useruid = AppStatus().loggedUser.uid;
     // elimina anche tutti i barcode associati al gruppo
     final snap = await FirebaseFirestore.instance
@@ -50,17 +55,20 @@ class BarcodeService {
         .delete();
   }
 
-  static Stream<QuerySnapshot> streamTags() {
+  static Stream<List<Tag>> streamTags() {
+    if (AppStatus().offlineMode) return OfflineService().streamTags();
     final useruid = AppStatus().loggedUser.uid;
     log.info('stream all tags for user $useruid');
     final collection = FirebaseFirestore.instance
         .collection('tag')
         .where('user', isEqualTo: useruid);
     log.info('collection $collection');
-    return collection.snapshots();
+    return collection.snapshots().map(
+        (snap) => snap.docs.map((doc) => Tag.fromJson(doc.data())).toList());
   }
 
   static Future<void> saveTag(Tag tag) {
+    if (AppStatus().offlineMode) return OfflineService().saveTag(tag);
     final isNew = (tag.uid == null);
     final data = tag.toJson();
     DocumentReference doc;
@@ -75,6 +83,7 @@ class BarcodeService {
   }
 
   static Future<void> deleteTag(String uid) async {
+    if (AppStatus().offlineMode) return OfflineService().deleteTag(uid);
     final useruid = AppStatus().loggedUser.uid;
     // rimuovo tutti i riferimenti al tag
     final data = await FirebaseFirestore.instance
@@ -91,6 +100,7 @@ class BarcodeService {
   }
 
   static Future<List<Barcode>> getBarcodes() async {
+    if (AppStatus().offlineMode) return OfflineService().getBarcodes();
     final useruid = AppStatus().loggedUser.uid;
     final result = await FirebaseFirestore.instance
         .collection('barcode')
@@ -102,7 +112,8 @@ class BarcodeService {
     return result.docs.map((doc) => Barcode.fromJson(doc.data())).toList();
   }
 
-  static Stream<QuerySnapshot> streamBarcodes() {
+  static Stream<List<Barcode>> streamBarcodes() {
+    if (AppStatus().offlineMode) return OfflineService().streamBarcodes();
     final useruid = AppStatus().loggedUser.uid;
     log.info('stream all barcodes for user $useruid');
     final collection = FirebaseFirestore.instance
@@ -111,16 +122,20 @@ class BarcodeService {
         .orderBy('group')
         .orderBy('order');
     log.info('collection $collection');
-    return collection.snapshots();
+    return collection.snapshots().map((snap) =>
+        snap.docs.map((doc) => Barcode.fromJson(doc.data())).toList());
   }
 
-  static Stream<DocumentSnapshot> streamBarcode(String uid) {
+  static Stream<Barcode> streamBarcode(String uid) {
+    if (AppStatus().offlineMode) return OfflineService().streamBarcode(uid);
     final result = FirebaseFirestore.instance.collection('barcode').doc(uid);
     log.info('result $result');
-    return result.snapshots();
+    return result.snapshots().map((snap) => Barcode.fromJson(snap.data()));
   }
 
-  static Stream<QuerySnapshot> streamBarcodesByGroup(String groupId) {
+  static Stream<List<Barcode>> streamBarcodesByGroup(String groupId) {
+    if (AppStatus().offlineMode)
+      return OfflineService().streamBarcodesByGroup(groupId);
     final useruid = AppStatus().loggedUser.uid;
     log.info('get all groups for user $useruid');
     final collection = FirebaseFirestore.instance
@@ -129,14 +144,18 @@ class BarcodeService {
         .where('group', isEqualTo: groupId)
         .orderBy('order');
     log.info('collection $collection');
-    return collection.snapshots();
+    return collection
+        .snapshots()
+        .map((snap) => snap.docs.map((doc) => Barcode.fromJson(doc.data())));
   }
 
   static Future<void> deleteBarcode(String uid) {
+    if (AppStatus().offlineMode) return OfflineService().deleteBarcode(uid);
     return FirebaseFirestore.instance.collection('barcode').doc(uid).delete();
   }
 
   static Future<void> saveBarcode(Barcode barcode) {
+    if (AppStatus().offlineMode) return OfflineService().saveBarcode(barcode);
     final isNew = (barcode.uid == null);
     final data = barcode.toJson();
     DocumentReference doc;

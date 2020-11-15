@@ -7,6 +7,10 @@ enum LoginMode {
 }
 
 class LoginScreen extends StatefulWidget {
+  final Function toggleOffline;
+
+  const LoginScreen({Key key, this.toggleOffline}) : super(key: key);
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -46,6 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
         body: LoginBody(
           mode: _mode,
           onSetMode: onSetMode,
+          toggleOffline: widget.toggleOffline,
         ),
       ),
     );

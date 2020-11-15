@@ -30,11 +30,11 @@ class _IsAuthState extends State<IsAuth> {
                 ),
               ),
             );
-          if (snapshot.hasData) {
+          if (snapshot.hasData || AppStatus().offlineMode) {
             AppStatus().loggedUser = snapshot.data;
             return widget.child;
           }
-          return LoginScreen();
+          return LoginScreen(toggleOffline: () => setState(() {}));
         });
   }
 }

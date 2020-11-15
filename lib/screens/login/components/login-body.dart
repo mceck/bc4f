@@ -1,5 +1,7 @@
 import 'package:bc4f/service/firebase-service.dart';
+import 'package:bc4f/service/offline-service.dart';
 import 'package:bc4f/utils/prefs.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:bc4f/screens/login/login.dart';
@@ -12,8 +14,10 @@ class LoginBody extends StatefulWidget {
 
   final LoginMode mode;
   final void Function(LoginMode) onSetMode;
+  final Function toggleOffline;
 
-  const LoginBody({Key key, this.mode, this.onSetMode}) : super(key: key);
+  const LoginBody({Key key, this.mode, this.onSetMode, this.toggleOffline})
+      : super(key: key);
 
   @override
   _LoginBodyState createState() => _LoginBodyState();
@@ -210,6 +214,19 @@ class _LoginBodyState extends State<LoginBody> {
                         style: TextStyle(color: primaryColor),
                       ),
                     ),
+                    if (widget.toggleOffline != null)
+                      FlatButton(
+                        child: Text(
+                          'Use offline',
+                          style: TextStyle(color: primaryColor),
+                        ),
+                        onPressed: () {
+                          OfflineService().init();
+                          AppStatus().offlineMode = true;
+                          AppStatus().toggleOffline = widget.toggleOffline;
+                          widget.toggleOffline();
+                        },
+                      ),
                     Text(
                       _authError,
                       style: TextStyle(color: Colors.red),

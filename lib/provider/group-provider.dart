@@ -15,8 +15,7 @@ class GroupProvider with ChangeNotifier {
   void load() {
     if (subs == null)
       subs = BarcodeService.streamGroups().listen((snap) {
-        groups =
-            snap.docs.map((doc) => BarcodeGroup.fromJson(doc.data())).toList();
+        groups = snap;
         notifyListeners();
       });
   }
