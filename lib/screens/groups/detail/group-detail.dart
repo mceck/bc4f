@@ -4,6 +4,7 @@ import 'package:bc4f/provider/barcode-provider.dart';
 import 'package:bc4f/screens/barcodes/form/barcode-form.dart';
 import 'package:bc4f/screens/groups/detail/components/group-detail-body.dart';
 import 'package:bc4f/screens/groups/form/group-form.dart';
+import 'package:bc4f/utils/constants.dart';
 import 'package:bc4f/utils/logger.dart';
 import 'package:bc4f/widget/layout/scaffold.dart';
 import 'package:flutter/material.dart';
@@ -45,8 +46,17 @@ class _GroupDetailState extends State<GroupDetail> {
   Widget build(BuildContext context) {
     return Bc4fScaffold(
       onTagFilterChange: onTagFilterChange,
-      title: Text(widget.group.name),
-      subtitle: Text(widget.group.description),
+      title: Text('Group: ${widget.group.name}'),
+      subtitle: Column(
+        children: [
+          Text(widget.group.description),
+          SizedBox(height: kDefaultPadding),
+          Text(
+            'View, add, edit or delete barcodes for this group',
+            textAlign: TextAlign.center,
+          )
+        ],
+      ),
       actionEdit: () {
         log.info('edit group');
         Navigator.of(context).pushNamed(

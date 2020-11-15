@@ -7,6 +7,8 @@ class SelectList extends StatelessWidget {
   final Widget Function(String) display;
   final bool showUnderline;
   final bool showIcon;
+  final Widget hint;
+  final TextStyle textStyle;
 
   const SelectList(
       {Key key,
@@ -15,7 +17,9 @@ class SelectList extends StatelessWidget {
       this.onChanged,
       this.display,
       this.showUnderline = true,
-      this.showIcon = true})
+      this.showIcon = true,
+      this.hint,
+      this.textStyle})
       : super(key: key);
 
   @override
@@ -30,10 +34,10 @@ class SelectList extends StatelessWidget {
         color: primaryColor,
         size: showIcon ? 20 : 0,
       ),
-      hint: Text('choose tag'),
+      hint: hint ?? Text('Choose'),
       iconSize: 24,
       elevation: 16,
-      // style: TextStyle(color: primaryColor),
+      style: textStyle,
       underline: showUnderline
           ? Container(
               height: 2,

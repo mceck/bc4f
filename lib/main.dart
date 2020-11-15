@@ -10,6 +10,9 @@ import 'package:bc4f/widget/wrappers/firebase-app.dart';
 import 'package:provider/provider.dart';
 
 void main() {
+  // init local storage
+  Prefs();
+  AppStatus();
   runApp(MyApp());
 }
 
@@ -17,8 +20,6 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    // init local storage
-    Prefs();
     return FirebaseApplication(
       child: App(),
     );

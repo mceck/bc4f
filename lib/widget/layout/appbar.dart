@@ -1,3 +1,4 @@
+import 'package:bc4f/screens/groups/group-editable-list.dart';
 import 'package:bc4f/utils/constants.dart';
 import 'package:bc4f/widget/components/tags.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ class WrapWithExpandedAppbar extends StatelessWidget {
   final void Function(List<String> filter) onGroupFilterChange;
   final Widget subtitle;
   final List<String> tagFilters;
+  final List<String> groupFilters;
 
   const WrapWithExpandedAppbar(
       {Key key,
@@ -17,7 +19,8 @@ class WrapWithExpandedAppbar extends StatelessWidget {
       this.onTagFilterChange,
       this.onGroupFilterChange,
       this.subtitle,
-      this.tagFilters})
+      this.tagFilters,
+      this.groupFilters})
       : super(key: key);
 
   @override
@@ -30,6 +33,7 @@ class WrapWithExpandedAppbar extends StatelessWidget {
           onTagFilterChange: onTagFilterChange,
           subtitle: subtitle,
           tagFilters: tagFilters,
+          groupFilters: groupFilters,
         ),
         Expanded(
           child: SingleChildScrollView(
@@ -55,6 +59,7 @@ class ExpandedAppbar extends StatelessWidget {
   final void Function(List<String> filter) onGroupFilterChange;
   final Widget subtitle;
   final List<String> tagFilters;
+  final List<String> groupFilters;
 
   const ExpandedAppbar(
       {Key key,
@@ -62,7 +67,8 @@ class ExpandedAppbar extends StatelessWidget {
       this.onTagFilterChange,
       this.onGroupFilterChange,
       this.subtitle,
-      this.tagFilters})
+      this.tagFilters,
+      this.groupFilters})
       : super(key: key);
 
   @override
@@ -75,22 +81,40 @@ class ExpandedAppbar extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 22),
             child: Container(
               width: double.infinity,
-              height: size.height * 0.15,
+              constraints: BoxConstraints(minHeight: size.height * 0.15),
+              padding: EdgeInsets.only(
+                left: kDefaultPadding,
+                right: kDefaultPadding,
+                bottom: onSearch != null ? kDefaultPadding * 3 : 0,
+              ),
               decoration: BoxDecoration(
                 borderRadius:
                     BorderRadius.vertical(bottom: Radius.circular(25)),
                 color: Theme.of(context).primaryColor,
               ),
               child: DefaultTextStyle(
-                style: TextStyle(color: Colors.white),
+                style: Theme.of(context)
+                    .textTheme
+                    .subtitle1
+                    .copyWith(color: Colors.white),
                 child: Column(
                   children: [
-                    if (subtitle != null) subtitle,
-                    if (onGroupFilterChange != null) Text('Group filters'),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(bottom: kDefaultPadding / 2),
+                      child: subtitle,
+                    ),
+                    if (onGroupFilterChange != null)
+                      EditableGroupList(
+                        onGroupFilterChange: onGroupFilterChange,
+                        groups: groupFilters,
+                        textStyle: TextStyle(color: Colors.white),
+                      ),
                     if (onTagFilterChange != null)
                       EditableTagList(
                         onTagFilterChange: onTagFilterChange,
                         tags: tagFilters,
+                        textStyle: TextStyle(color: Colors.white),
                       ),
                   ],
                 ),

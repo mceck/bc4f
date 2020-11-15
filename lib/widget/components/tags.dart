@@ -7,8 +7,10 @@ import 'package:provider/provider.dart';
 class EditableTagList extends StatefulWidget {
   final void Function(List<String> tags) onTagFilterChange;
   final List<String> tags;
+  final TextStyle textStyle;
 
-  const EditableTagList({Key key, @required this.onTagFilterChange, this.tags})
+  const EditableTagList(
+      {Key key, @required this.onTagFilterChange, this.tags, this.textStyle})
       : super(key: key);
 
   @override
@@ -31,72 +33,76 @@ class _EditableTagListState extends State<EditableTagList> {
   Widget build(BuildContext context) {
     final allTags = Provider.of<TagProvider>(context).tags;
     if (tags == null || allTags.length == 0) return Container();
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          Text('tags: '),
-          IconButton(
-            icon: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(50),
-                color: Colors.white54,
+    return SizedBox(
+      height: 40,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            Text('Tags: '),
+            IconButton(
+              icon: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  color: Colors.white54,
+                ),
+                child: Icon(
+                  Icons.add,
+                  color: Colors.green[600],
+                ),
               ),
-              child: Icon(
-                Icons.add,
-                color: Colors.green[600],
-              ),
+              onPressed: () {
+                setState(() {
+                  tags.add(null);
+                });
+              },
             ),
-            onPressed: () {
-              setState(() {
-                tags.add(null);
-              });
-            },
-          ),
-          ...tags.map(
-            (tagId) {
-              return Row(
-                children: [
-                  SelectList(
-                    key: ValueKey(tagId),
-                    list: allTags.map((t) => t.uid).toList(),
-                    onChanged: (val) {
-                      final idx = tags.indexOf(tagId);
-                      if (idx >= 0)
-                        setState(() {
-                          tags[idx] = val;
-                          widget.onTagFilterChange(notNullTags);
-                        });
-                    },
-                    value: tagId,
-                    display: (id) => TagElem(
-                        tag: allTags.firstWhere((t) => t.uid == id,
-                            orElse: () => null)),
-                    showUnderline: false,
-                    showIcon: false,
-                  ),
-                  IconButton(
-                      icon: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          color: Colors.white54,
+            ...tags.map(
+              (tagId) {
+                return Row(
+                  children: [
+                    SelectList(
+                      key: ValueKey(tagId),
+                      hint: Text('tag', style: widget.textStyle),
+                      list: allTags.map((t) => t.uid).toList(),
+                      onChanged: (val) {
+                        final idx = tags.indexOf(tagId);
+                        if (idx >= 0)
+                          setState(() {
+                            tags[idx] = val;
+                            widget.onTagFilterChange(notNullTags);
+                          });
+                      },
+                      value: tagId,
+                      display: (id) => TagElem(
+                          tag: allTags.firstWhere((t) => t.uid == id,
+                              orElse: () => null)),
+                      showUnderline: false,
+                      showIcon: false,
+                    ),
+                    IconButton(
+                        icon: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                            color: Colors.white54,
+                          ),
+                          child: Icon(
+                            Icons.cancel_outlined,
+                            color: Colors.red[700],
+                          ),
                         ),
-                        child: Icon(
-                          Icons.cancel_outlined,
-                          color: Colors.red[700],
-                        ),
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          tags.remove(tagId);
-                          widget.onTagFilterChange(notNullTags);
-                        });
-                      }),
-                ],
-              );
-            },
-          ).toList(),
-        ],
+                        onPressed: () {
+                          setState(() {
+                            tags.remove(tagId);
+                            widget.onTagFilterChange(notNullTags);
+                          });
+                        }),
+                  ],
+                );
+              },
+            ).toList(),
+          ],
+        ),
       ),
     );
   }

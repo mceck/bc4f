@@ -16,6 +16,7 @@ class Bc4fScaffold extends StatelessWidget {
   final Widget title;
   final Widget subtitle;
   final List<String> tagFilters;
+  final List<String> groupFilters;
   final bool withExtendedAppbar;
 
   const Bc4fScaffold({
@@ -32,6 +33,7 @@ class Bc4fScaffold extends StatelessWidget {
     this.onGroupFilterChange,
     this.tagFilters,
     this.withExtendedAppbar = true,
+    this.groupFilters,
   }) : super(key: key);
 
   PreferredSizeWidget buildAppBar(BuildContext context) {
@@ -67,6 +69,7 @@ class Bc4fScaffold extends StatelessWidget {
                 onTagFilterChange: onTagFilterChange,
                 onGroupFilterChange: onGroupFilterChange,
                 tagFilters: tagFilters,
+                groupFilters: groupFilters,
               )
             : body,
       ),

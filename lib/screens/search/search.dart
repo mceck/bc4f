@@ -76,11 +76,13 @@ class _SearchScreenState extends State<SearchScreen> {
         });
       },
       tagFilters: tagFilters,
+      groupFilters: groupFilters,
       onGroupFilterChange: (List<String> filters) {
         setState(() {
           groupFilters = filters;
         });
       },
+      subtitle: Text('Search barcodes'),
       body: SearchBody(barcodes: barcodes),
     );
   }

@@ -22,6 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      title: 'BC4F - Login',
       // initialRoute: '/login',
       home: Scaffold(
         appBar: AppBar(

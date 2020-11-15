@@ -40,6 +40,7 @@ class _BarcodeViewState extends State<BarcodeView>
   @override
   Widget build(BuildContext context) {
     return Bc4fScaffold(
+      title: Text('Barcode'),
       actionEdit: () => Navigator.of(context).pushNamed(
         BarcodeForm.route,
         arguments: {'barcode': widget.barcodes[tabController.index]},
