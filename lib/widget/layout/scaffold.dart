@@ -18,6 +18,7 @@ class Bc4fScaffold extends StatelessWidget {
   final List<String> tagFilters;
   final List<String> groupFilters;
   final bool withExtendedAppbar;
+  final String backgroundImage;
 
   const Bc4fScaffold({
     Key key,
@@ -34,6 +35,7 @@ class Bc4fScaffold extends StatelessWidget {
     this.tagFilters,
     this.withExtendedAppbar = true,
     this.groupFilters,
+    this.backgroundImage,
   }) : super(key: key);
 
   PreferredSizeWidget buildAppBar(BuildContext context) {
@@ -64,12 +66,13 @@ class Bc4fScaffold extends StatelessWidget {
         child: withExtendedAppbar
             ? WrapWithExpandedAppbar(
                 child: body,
-                subtitle: subtitle ?? Text('Barcodes everywhere'),
+                subtitle: subtitle,
                 onSearch: onSearch,
                 onTagFilterChange: onTagFilterChange,
                 onGroupFilterChange: onGroupFilterChange,
                 tagFilters: tagFilters,
                 groupFilters: groupFilters,
+                backgroundImage: backgroundImage,
               )
             : body,
       ),

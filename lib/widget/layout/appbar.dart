@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:bc4f/screens/groups/group-editable-list.dart';
 import 'package:bc4f/utils/constants.dart';
+import 'package:bc4f/utils/images.dart';
 import 'package:bc4f/widget/components/tags.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +14,7 @@ class WrapWithExpandedAppbar extends StatelessWidget {
   final Widget subtitle;
   final List<String> tagFilters;
   final List<String> groupFilters;
+  final String backgroundImage;
 
   const WrapWithExpandedAppbar(
       {Key key,
@@ -20,7 +24,8 @@ class WrapWithExpandedAppbar extends StatelessWidget {
       this.onGroupFilterChange,
       this.subtitle,
       this.tagFilters,
-      this.groupFilters})
+      this.groupFilters,
+      this.backgroundImage})
       : super(key: key);
 
   @override
@@ -34,6 +39,7 @@ class WrapWithExpandedAppbar extends StatelessWidget {
           subtitle: subtitle,
           tagFilters: tagFilters,
           groupFilters: groupFilters,
+          backgroundImage: backgroundImage,
         ),
         Expanded(
           child: SingleChildScrollView(
@@ -50,12 +56,15 @@ class WrapWithExpandedAppbar extends StatelessWidget {
 }
 
 class ExpandedAppbar extends StatelessWidget {
+  static const _kDefaultImages = [Images.bc1, Images.bc2, Images.bc3];
+
   final void Function(String search) onSearch;
   final void Function(List<String> filter) onTagFilterChange;
   final void Function(List<String> filter) onGroupFilterChange;
   final Widget subtitle;
   final List<String> tagFilters;
   final List<String> groupFilters;
+  final String backgroundImage;
 
   const ExpandedAppbar(
       {Key key,
@@ -64,12 +73,14 @@ class ExpandedAppbar extends StatelessWidget {
       this.onGroupFilterChange,
       this.subtitle,
       this.tagFilters,
-      this.groupFilters})
+      this.groupFilters,
+      this.backgroundImage})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    String bgImg = backgroundImage ?? _kDefaultImages[Random().nextInt(3)];
     return SingleChildScrollView(
       child: Stack(
         children: [
@@ -79,39 +90,62 @@ class ExpandedAppbar extends StatelessWidget {
               width: double.infinity,
               constraints: BoxConstraints(minHeight: size.height * 0.15),
               padding: EdgeInsets.only(
-                left: kDefaultPadding,
-                right: kDefaultPadding,
-                bottom: onSearch != null ? kDefaultPadding * 3 : 0,
-              ),
+                  bottom: onSearch != null ? kDefaultPadding * 3 : 0),
               decoration: BoxDecoration(
                 borderRadius:
                     BorderRadius.vertical(bottom: Radius.circular(25)),
                 color: Theme.of(context).primaryColor,
               ),
               child: DefaultTextStyle(
-                style: Theme.of(context)
-                    .textTheme
-                    .subtitle1
-                    .copyWith(color: Colors.white),
-                child: Column(
+                style: Theme.of(context).textTheme.subtitle1.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    shadows: [
+                      Shadow(
+                        blurRadius: 5,
+                        color: Colors.black,
+                      )
+                      // offset: Offset(-1, 1))
+                    ]),
+                child: Stack(
                   children: [
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(bottom: kDefaultPadding / 2),
-                      child: subtitle,
+                    Image.asset(
+                      bgImg,
+                      fit: BoxFit.cover,
+                      width: size.width,
+                      height: size.height * 0.15,
                     ),
-                    if (onGroupFilterChange != null)
-                      EditableGroupList(
-                        onGroupFilterChange: onGroupFilterChange,
-                        groups: groupFilters,
-                        textStyle: TextStyle(color: Colors.white),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: kDefaultPadding,
+                        left: kDefaultPadding,
+                        right: kDefaultPadding,
                       ),
-                    if (onTagFilterChange != null)
-                      EditableTagList(
-                        onTagFilterChange: onTagFilterChange,
-                        tags: tagFilters,
-                        textStyle: TextStyle(color: Colors.white),
+                      child: Center(
+                        child: Column(
+                          children: [
+                            if (subtitle != null)
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    bottom: kDefaultPadding / 2),
+                                child: subtitle,
+                              ),
+                            if (onGroupFilterChange != null)
+                              EditableGroupList(
+                                onGroupFilterChange: onGroupFilterChange,
+                                groups: groupFilters,
+                                textStyle: TextStyle(color: Colors.white),
+                              ),
+                            if (onTagFilterChange != null)
+                              EditableTagList(
+                                onTagFilterChange: onTagFilterChange,
+                                tags: tagFilters,
+                                textStyle: TextStyle(color: Colors.white),
+                              ),
+                          ],
+                        ),
                       ),
+                    ),
                   ],
                 ),
               ),

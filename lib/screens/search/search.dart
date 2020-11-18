@@ -1,4 +1,5 @@
 import 'package:bc4f/provider/barcode-provider.dart';
+import 'package:bc4f/utils/images.dart';
 import 'package:flutter/material.dart';
 import 'package:bc4f/model/barcode.dart';
 import 'package:bc4f/widget/layout/scaffold.dart';
@@ -82,7 +83,8 @@ class _SearchScreenState extends State<SearchScreen> {
           groupFilters = filters;
         });
       },
-      subtitle: Text('Search barcodes'),
+      title: Text('Search barcodes'),
+      backgroundImage: Images.bc1,
       body: SearchBody(barcodes: barcodes),
     );
   }

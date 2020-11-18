@@ -59,6 +59,9 @@ class _Bc4fBottomNavbarState extends State<Bc4fBottomNavbar> {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
+      showSelectedLabels: false,
+      showUnselectedLabels: false,
       items: _routes
           .map(
             (route) => BottomNavigationBarItem(
