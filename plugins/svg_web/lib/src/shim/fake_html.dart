@@ -1,5 +1,7 @@
 class ImageElement {
-  ImageElement({src, height, width, style});
+  String src;
+  int width, height;
+  ImageElement({this.src, this.height, this.width, style});
   void setAttribute(name, value) {}
 }
 
