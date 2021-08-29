@@ -41,7 +41,10 @@ class BarcodeCard extends StatelessWidget {
     return GestureDetector(
       onTap: () => Navigator.of(context).pushNamed(
         BarcodeView.route,
-        arguments: {'barcodes': barcodes, 'startIdx': index},
+        arguments: {
+          'barcodes': List<Barcode>.from(barcodes),
+          'startIdx': index
+        },
       ),
       child: Card(
         clipBehavior: Clip.antiAlias,

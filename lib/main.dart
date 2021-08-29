@@ -8,6 +8,7 @@ import 'package:bc4f/router/router.dart';
 import 'package:bc4f/widget/wrappers/is-auth.dart';
 import 'package:bc4f/utils/app-status.dart';
 import 'package:bc4f/widget/wrappers/firebase-app.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -23,7 +24,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FirebaseApplication(
-      child: App(),
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+        ),
+        child: App(),
+      ),
     );
   }
 }

@@ -24,7 +24,7 @@ dependencies:
   flutter:
     sdk: flutter
   barcode: ^1.17.0
-  flutter_svg: ^0.19.0
+  flutter_svg: ^0.22.0
   svg_web:
     path: ./plugins/svg_web
   http: ^0.12.2
@@ -43,7 +43,7 @@ dependencies:
   # flutter_camera_ml_vision: ^2.3.0
   # scanner stuff
   firebase_ml_vision: ^0.9.9
-  flutter_widgets: ^0.1.12
+  visibility_detector: ^0.2.0
   camera: ^0.5.8+11
   # path_provider: ^1.6.18
   giphy_picker: ^1.0.8

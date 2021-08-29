@@ -101,7 +101,7 @@ class _TagFormBodyState extends State<TagFormBody> {
                   onPressed: () {
                     showDialog(
                       context: context,
-                      child: AlertDialog(
+                      builder: (context) => AlertDialog(
                         title: const Text('Pick a color!'),
                         content: SingleChildScrollView(
                           child: ColorPicker(
@@ -116,7 +116,7 @@ class _TagFormBodyState extends State<TagFormBody> {
                           ),
                         ),
                         actions: <Widget>[
-                          FlatButton(
+                          TextButton(
                             child: const Text('Ok'),
                             onPressed: () {
                               Navigator.of(context).pop();
@@ -133,7 +133,7 @@ class _TagFormBodyState extends State<TagFormBody> {
         SizedBox(height: kDefaultPadding * 2),
         Row(
           children: [
-            RaisedButton(
+            TextButton(
               onPressed: save,
               child: Text('Save'),
             ),

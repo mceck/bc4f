@@ -5,6 +5,7 @@ import 'package:bc4f/model/group.dart';
 import 'package:bc4f/model/tag.dart';
 import 'package:bc4f/service/offline-service.dart';
 import 'package:bc4f/utils/app-status.dart';
+import 'package:bc4f/utils/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bc4f/utils/logger.dart';
 
@@ -168,4 +169,66 @@ class BarcodeService {
     data['uid'] = doc.id;
     return doc.set(data);
   }
+
+  static Future<void> _reorder(
+      String collection, List list, int from, int to) async {
+    var prev;
+    if (from > to) {
+      if (to > 0) prev = list[to - 1];
+    } else {
+      prev = list[to];
+    }
+    var next;
+    if (from > to) {
+      next = list[to];
+    } else {
+      if (to < list.length) next = list[to + 1];
+    }
+    final src = list[from];
+    if (prev != null) {
+      //next==null move to last use default distance
+      final dist = next != null ? next.order - prev.order : kOrderingDistance;
+      if (dist < 2) {
+        list.removeAt(from);
+        list.insert(to, src);
+        await _resetOrder(collection, list);
+      } else {
+        src.order = prev.order + dist ~/ 2;
+        await FirebaseFirestore.instance
+            .collection(collection)
+            .doc(src.uid)
+            .update({'order': src.order});
+      }
+    } else {
+      //move to first
+      if (next.order < 1) {
+        list.removeAt(from);
+        list.insert(to, src);
+        await _resetOrder(collection, list);
+      } else {
+        src.order = next.order ~/ 2;
+        await FirebaseFirestore.instance
+            .collection(collection)
+            .doc(src.uid)
+            .update({'order': src.order});
+      }
+    }
+  }
+
+  static Future<void> _resetOrder(
+      String collection, List<BarcodeGroup> groups) async {
+    for (int i = 0; i < groups.length; i++) {
+      await FirebaseFirestore.instance
+          .collection('barcode_group')
+          .doc(groups[i].uid)
+          .update({'order': (i + 1) * kOrderingDistance});
+    }
+  }
+
+  static Future<void> reorderGroup(
+          List<BarcodeGroup> groups, int from, int to) =>
+      _reorder('barcode_group', groups, from, to);
+  static Future<void> reorderBarcode(
+          List<Barcode> barcodes, int from, int to) =>
+      _reorder('barcode', barcodes, from, to);
 }

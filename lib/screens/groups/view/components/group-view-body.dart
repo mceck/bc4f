@@ -1,7 +1,10 @@
 import 'package:bc4f/model/group.dart';
 import 'package:bc4f/screens/groups/group-card.dart';
+import 'package:bc4f/service/barcode-service.dart';
 import 'package:bc4f/utils/constants.dart';
+import 'package:bc4f/utils/logger.dart';
 import 'package:flutter/material.dart';
+import 'package:reorderables/reorderables.dart';
 
 class GroupViewBody extends StatelessWidget {
   const GroupViewBody({
@@ -13,23 +16,24 @@ class GroupViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      shrinkWrap: true,
-      primary: false,
-      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-        childAspectRatio: kDefaultGridCellAspectRatio,
-        maxCrossAxisExtent: kDefaultGridMaxExtent,
-        crossAxisSpacing: kDefaultPadding,
-        mainAxisSpacing: kDefaultPadding,
-      ),
-      itemCount: groups.length,
-      itemBuilder: (ctx, index) {
-        final group = groups[index];
-        return GroupCard(
-          group: group,
-          withSlideActions: true,
-        );
-      },
-    );
+    return ReorderableWrap(
+        runSpacing: kDefaultPadding,
+        spacing: kDefaultPadding,
+        children: groups
+            .map((group) => SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.3,
+                  child: AspectRatio(
+                    aspectRatio: kDefaultGridCellAspectRatio,
+                    child: GroupCard(
+                      group: group,
+                      withSlideActions: true,
+                    ),
+                  ),
+                ))
+            .toList(),
+        onReorder: (from, to) {
+          log.info('from $from to $to');
+          BarcodeService.reorderGroup(groups, from, to);
+        });
   }
 }
