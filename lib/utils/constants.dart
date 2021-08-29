@@ -13,4 +13,4 @@ const double kDefaultPadding = 15;
 const double kDefaultGridMaxExtent = 400;
 const double kDefaultGridCellAspectRatio = 8 / 5;
 
-const int kOrderingDistance = 10;
+const int kOrderingDistance = 100;

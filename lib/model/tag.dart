@@ -8,11 +8,13 @@ class Tag {
   String name;
   @JsonKey(toJson: _TagConv.colorToJson, fromJson: _TagConv.colorFromJson)
   Color color;
+  int order;
 
   Tag({
     this.uid,
     this.name,
     this.color,
+    this.order,
   });
   factory Tag.fromJson(Map<String, dynamic> json) => _$TagFromJson(json);
   Map<String, dynamic> toJson() => _$TagToJson(this);

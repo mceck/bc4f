@@ -3,8 +3,10 @@ import 'package:bc4f/screens/search/search.dart';
 import 'package:bc4f/screens/tags/form/tag-form.dart';
 import 'package:bc4f/service/barcode-service.dart';
 import 'package:bc4f/utils/constants.dart';
+import 'package:bc4f/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:reorderables/reorderables.dart';
 
 class TagViewBody extends StatelessWidget {
   final readOnly;
@@ -18,65 +20,70 @@ class TagViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-        shrinkWrap: true,
-        primary: false,
-        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-          childAspectRatio: 5 / 2,
-          maxCrossAxisExtent: 250,
-          crossAxisSpacing: kDefaultPadding,
-          mainAxisSpacing: kDefaultPadding,
-        ),
-        itemCount: tags.length,
-        itemBuilder: (ctx, idx) {
-          final tag = tags[idx];
-          return GestureDetector(
-            onTap: () => Navigator.of(context).pushNamedAndRemoveUntil(
-              SearchScreen.route,
-              (route) => false,
-              arguments: {
-                'tagFilters': [tag.uid]
-              },
-            ),
-            child: Card(
-              clipBehavior: Clip.antiAlias,
-              child: Slidable(
-                actionPane: SlidableDrawerActionPane(),
-                actionExtentRatio: 0.25,
-                child: Center(
-                  child: ListTile(
-                    leading: Icon(
-                      Icons.label,
-                      color: tag.color,
+    print(MediaQuery.of(context).size.width);
+    return ReorderableWrap(
+        runSpacing: kDefaultPadding / 2,
+        spacing: kDefaultPadding / 2,
+        children: tags
+            .map((tag) => SizedBox(
+                  width: MediaQuery.of(context).size.width >= 410
+                      ? 185
+                      : (MediaQuery.of(context).size.width -
+                              kDefaultPadding * 3) /
+                          2,
+                  child: GestureDetector(
+                    onTap: () => Navigator.of(context).pushNamedAndRemoveUntil(
+                      SearchScreen.route,
+                      (route) => false,
+                      arguments: {
+                        'tagFilters': [tag.uid]
+                      },
                     ),
-                    title: Text(tag.name ?? 'null'),
+                    child: Card(
+                      clipBehavior: Clip.antiAlias,
+                      child: Slidable(
+                        actionPane: SlidableDrawerActionPane(),
+                        actionExtentRatio: 0.25,
+                        child: Center(
+                          child: ListTile(
+                            leading: Icon(
+                              Icons.label,
+                              color: tag.color,
+                            ),
+                            title: Text(tag.name ?? 'null'),
+                          ),
+                        ),
+                        actions: readOnly
+                            ? null
+                            : [
+                                IconSlideAction(
+                                  caption: 'Delete',
+                                  color: Colors.red,
+                                  icon: Icons.delete,
+                                  onTap: () =>
+                                      BarcodeService.deleteTag(tag.uid),
+                                ),
+                              ],
+                        secondaryActions: readOnly
+                            ? null
+                            : [
+                                IconSlideAction(
+                                  caption: 'Edit',
+                                  color: Colors.blue,
+                                  icon: Icons.edit,
+                                  onTap: () => Navigator.of(context).pushNamed(
+                                      TagForm.route,
+                                      arguments: {'tag': tag}),
+                                ),
+                              ],
+                      ),
+                    ),
                   ),
-                ),
-                actions: readOnly
-                    ? null
-                    : [
-                        IconSlideAction(
-                          caption: 'Delete',
-                          color: Colors.red,
-                          icon: Icons.delete,
-                          onTap: () => BarcodeService.deleteTag(tag.uid),
-                        ),
-                      ],
-                secondaryActions: readOnly
-                    ? null
-                    : [
-                        IconSlideAction(
-                          caption: 'Edit',
-                          color: Colors.blue,
-                          icon: Icons.edit,
-                          onTap: () => Navigator.of(context).pushNamed(
-                              TagForm.route,
-                              arguments: {'tag': tag}),
-                        ),
-                      ],
-              ),
-            ),
-          );
+                ))
+            .toList(),
+        onReorder: (from, to) {
+          log.info('from $from to $to');
+          BarcodeService.reorderTag(tags, from, to);
         });
   }
 }

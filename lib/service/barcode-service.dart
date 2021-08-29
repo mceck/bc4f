@@ -62,7 +62,8 @@ class BarcodeService {
     log.info('stream all tags for user $useruid');
     final collection = FirebaseFirestore.instance
         .collection('tag')
-        .where('user', isEqualTo: useruid);
+        .where('user', isEqualTo: useruid)
+        .orderBy('order');
     log.info('collection $collection');
     return collection.snapshots().map(
         (snap) => snap.docs.map((doc) => Tag.fromJson(doc.data())).toList());
@@ -215,14 +216,57 @@ class BarcodeService {
     }
   }
 
-  static Future<void> _resetOrder(
-      String collection, List<BarcodeGroup> groups) async {
-    for (int i = 0; i < groups.length; i++) {
+  static Future<void> _resetOrder(String collection, List list) async {
+    for (int i = 0; i < list.length; i++) {
       await FirebaseFirestore.instance
-          .collection('barcode_group')
-          .doc(groups[i].uid)
+          .collection(collection)
+          .doc(list[i].uid)
           .update({'order': (i + 1) * kOrderingDistance});
     }
+  }
+
+  static Future<void> _deleteCollection(
+      String user, String collectionName) async {
+    final collection = await FirebaseFirestore.instance
+        .collection(collectionName)
+        .where('user', isEqualTo: user)
+        .get();
+    for (int i = 0; i < collection.size; i++) {
+      await collection.docs[i].reference.delete();
+    }
+  }
+
+  static Future<dynamic> _copyCollection(String collectionName, String user,
+      [Map<String, String> groupMap, Map<String, String> tagMap]) async {
+    final useruid = AppStatus().loggedUser.uid;
+    log.info('query start');
+    var collection = (await FirebaseFirestore.instance
+            .collection(collectionName)
+            .where('user', isEqualTo: useruid)
+            .get())
+        .docs;
+    log.info(' read ok');
+    final Map<String, String> retMap = {};
+    for (int i = 0; i < collection.length; i++) {
+      final doc = collection[i].data();
+      final newDoc =
+          FirebaseFirestore.instance.collection(collectionName).doc();
+      log.info('creating doc ${newDoc.id}');
+      doc['user'] = user;
+      log.info('updating user to $user');
+      retMap[doc['uid']] = newDoc.id;
+      doc['uid'] = newDoc.id;
+      if (collectionName == 'barcode') {
+        doc['group'] = groupMap[doc['group']];
+        if (doc['tags'] != null)
+          doc['tags'] = doc['tags'].map((t) => tagMap[t]).toList();
+      }
+      log.info('update!');
+      await newDoc.set(doc);
+      log.info('lezgoo');
+    }
+    log.info('copied ${collection.length} $collectionName');
+    return retMap;
   }
 
   static Future<void> reorderGroup(
@@ -231,4 +275,16 @@ class BarcodeService {
   static Future<void> reorderBarcode(
           List<Barcode> barcodes, int from, int to) =>
       _reorder('barcode', barcodes, from, to);
+
+  static void reorderTag(List<Tag> tags, int from, int to) =>
+      _reorder('tag', tags, from, to);
+
+  static Future<void> copyUser(String user) async {
+    await _deleteCollection(user, 'barcode_group');
+    final groupMap = await _copyCollection('barcode_group', user);
+    await _deleteCollection(user, 'tag');
+    final tagMap = await _copyCollection('tag', user);
+    await _deleteCollection(user, 'barcode');
+    await _copyCollection('barcode', user, groupMap, tagMap);
+  }
 }

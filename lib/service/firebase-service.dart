@@ -48,6 +48,7 @@ class FirebaseService {
     } catch (e) {
       log.warning('login error $e');
       AppStatus().loggedUser = null;
+      throw e;
     }
   }
 }
