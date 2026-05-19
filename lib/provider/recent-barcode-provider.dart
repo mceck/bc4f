@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:bc4f/model/barcode.dart';
@@ -23,10 +22,12 @@ class RecentBarcodeProvider with ChangeNotifier {
   }
 
   void load() {
-    final jsonStr = Prefs().instance.getString(LOCALSTORE_RECENTS);
+    final jsonStr = Prefs().instance?.getString(LOCALSTORE_RECENTS);
     if (jsonStr != null) {
-      final List list = json.decode(jsonStr);
-      barcodes = list.map((map) => Barcode.fromJson(map)).toList();
+      final List list = json.decode(jsonStr) as List;
+      barcodes = list
+          .map((map) => Barcode.fromJson(map as Map<String, dynamic>))
+          .toList();
       log.info('loaded $list');
       notifyListeners();
     }
@@ -35,7 +36,7 @@ class RecentBarcodeProvider with ChangeNotifier {
   Future<void> save() async {
     final list = barcodes.map((bc) => bc.toJson()).toList();
     final jsonStr = json.encode(list);
-    await Prefs().instance.setString(LOCALSTORE_RECENTS, jsonStr);
+    await Prefs().instance?.setString(LOCALSTORE_RECENTS, jsonStr);
   }
 
   Future<void> close() async {

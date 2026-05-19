@@ -6,15 +6,13 @@ part of 'group.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-BarcodeGroup _$BarcodeGroupFromJson(Map<String, dynamic> json) {
-  return BarcodeGroup(
-    description: json['description'] as String,
-    uid: json['uid'] as String,
-    imgUrl: json['imgUrl'] as String,
-    name: json['name'] as String,
-    order: json['order'] as int ?? 0,
-  );
-}
+BarcodeGroup _$BarcodeGroupFromJson(Map<String, dynamic> json) => BarcodeGroup(
+      description: json['description'] as String?,
+      uid: json['uid'] as String?,
+      imgUrl: json['imgUrl'] as String?,
+      name: json['name'] as String?,
+      order: (json['order'] as num?)?.toInt() ?? 0,
+    );
 
 Map<String, dynamic> _$BarcodeGroupToJson(BarcodeGroup instance) =>
     <String, dynamic>{

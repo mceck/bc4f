@@ -6,19 +6,21 @@ part of 'barcode.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Barcode _$BarcodeFromJson(Map<String, dynamic> json) {
-  return Barcode(
-    code: json['code'] as String,
-    group: json['group'] as String,
-    description: json['description'] as String,
-    type: _BarcodeConv.bcTypeFromJson(json['type'] as String),
-    uid: json['uid'] as String,
-    imgUrl: json['imgUrl'] as String,
-    name: json['name'] as String,
-    tags: (json['tags'] as List)?.map((e) => e as String)?.toList() ?? [],
-    order: json['order'] as int ?? 0,
-  );
-}
+Barcode _$BarcodeFromJson(Map<String, dynamic> json) => Barcode(
+      code: json['code'] as String?,
+      group: json['group'] as String?,
+      description: json['description'] as String?,
+      type: json['type'] == null
+          ? bcLib.BarcodeType.CodeEAN13
+          : _BarcodeConv.bcTypeFromJson(json['type'] as String),
+      uid: json['uid'] as String?,
+      imgUrl: json['imgUrl'] as String?,
+      name: json['name'] as String?,
+      tags:
+          (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+              [],
+      order: (json['order'] as num?)?.toInt() ?? 0,
+    );
 
 Map<String, dynamic> _$BarcodeToJson(Barcode instance) => <String, dynamic>{
       'uid': instance.uid,

@@ -4,17 +4,17 @@ part 'barcode.g.dart';
 
 @JsonSerializable()
 class Barcode {
-  String uid;
-  String code;
+  String? uid;
+  String? code;
   @JsonKey(
     fromJson: _BarcodeConv.bcTypeFromJson,
     toJson: _BarcodeConv.bcTypeToJson,
   )
   bcLib.BarcodeType type;
-  String group;
-  String name;
-  String description;
-  String imgUrl;
+  String? group;
+  String? name;
+  String? description;
+  String? imgUrl;
   @JsonKey(defaultValue: <String>[])
   List<String> tags;
   @JsonKey(defaultValue: 0)
@@ -28,11 +28,10 @@ class Barcode {
     this.uid,
     this.imgUrl,
     this.name,
-    this.tags,
+    List<String>? tags,
     this.order = 0,
-  }) {
-    this.tags = this.tags ?? [];
-  }
+  }) : tags = tags ?? [];
+
   factory Barcode.fromJson(Map<String, dynamic> json) =>
       _$BarcodeFromJson(json);
   Map<String, dynamic> toJson() => _$BarcodeToJson(this);

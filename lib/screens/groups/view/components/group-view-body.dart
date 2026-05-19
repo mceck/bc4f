@@ -7,33 +7,30 @@ import 'package:flutter/material.dart';
 import 'package:reorderables/reorderables.dart';
 
 class GroupViewBody extends StatelessWidget {
-  const GroupViewBody({
-    Key key,
-    @required this.groups,
-  }) : super(key: key);
+  const GroupViewBody({super.key, required this.groups});
 
   final List<BarcodeGroup> groups;
 
   @override
   Widget build(BuildContext context) {
     return ReorderableWrap(
-        runSpacing: kDefaultPadding,
-        spacing: kDefaultPadding,
-        children: groups
-            .map((group) => SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.3,
-                  child: AspectRatio(
-                    aspectRatio: kDefaultGridCellAspectRatio,
-                    child: GroupCard(
-                      group: group,
-                      withSlideActions: true,
-                    ),
-                  ),
-                ))
-            .toList(),
-        onReorder: (from, to) {
-          log.info('from $from to $to');
-          BarcodeService.reorderGroup(groups, from, to);
-        });
+      runSpacing: kDefaultPadding,
+      spacing: kDefaultPadding,
+      children: groups
+          .map(
+            (group) => SizedBox(
+              height: MediaQuery.of(context).size.height * 0.3,
+              child: AspectRatio(
+                aspectRatio: kDefaultGridCellAspectRatio,
+                child: GroupCard(group: group, withSlideActions: true),
+              ),
+            ),
+          )
+          .toList(),
+      onReorder: (from, to) {
+        log.info('from $from to $to');
+        BarcodeService.reorderGroup(groups, from, to);
+      },
+    );
   }
 }

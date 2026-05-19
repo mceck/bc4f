@@ -13,24 +13,28 @@ class BarcodeView extends StatefulWidget {
   final List<Barcode> barcodes;
   final int startIdx;
 
-  const BarcodeView({Key key, this.barcodes, this.startIdx}) : super(key: key);
+  const BarcodeView({
+    super.key,
+    required this.barcodes,
+    required this.startIdx,
+  });
 
   @override
-  _BarcodeViewState createState() => _BarcodeViewState();
+  State<BarcodeView> createState() => _BarcodeViewState();
 }
 
 class _BarcodeViewState extends State<BarcodeView>
     with TickerProviderStateMixin {
-  TabController tabController;
+  late TabController tabController;
 
   @override
   void initState() {
     tabController = TabController(
-        initialIndex: widget.startIdx,
-        length: widget.barcodes.length,
-        vsync: this);
+      initialIndex: widget.startIdx,
+      length: widget.barcodes.length,
+      vsync: this,
+    );
 
-    // update recent list on popup
     Provider.of<RecentBarcodeProvider>(context, listen: false)
         .pushRecent(widget.barcodes[widget.startIdx]);
 
@@ -39,21 +43,23 @@ class _BarcodeViewState extends State<BarcodeView>
 
   @override
   void dispose() {
-    if (tabController != null) tabController.dispose();
+    tabController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Bc4fScaffold(
-      title: Text('Barcode'),
+      title: const Text('Barcode'),
       actionEdit: () => Navigator.of(context).pushNamed(
         BarcodeForm.route,
         arguments: {'barcode': widget.barcodes[tabController.index]},
       ),
       withExtendedAppbar: false,
       body: BarcodeViewBody(
-          tabController: tabController, barcodes: widget.barcodes),
+        tabController: tabController,
+        barcodes: widget.barcodes,
+      ),
     );
   }
 }

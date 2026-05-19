@@ -1,7 +1,5 @@
 import 'package:bc4f/utils/app-status.dart';
-import 'package:bc4f/utils/constants.dart';
 import 'package:bc4f/utils/logger.dart';
-import 'package:bc4f/utils/prefs.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class FirebaseService {
@@ -21,16 +19,16 @@ class FirebaseService {
     try {
       await AppStatus().resetProviders();
       await AppStatus().authStorage?.deleteAll();
-      // await Prefs().instance?.remove(KEYSTORE_EMAIL);
     } catch (e) {
       log.warning('Error logout');
       log.severe(e);
     }
     AppStatus().loggedUser = null;
-    if (isOffline && AppStatus().refreshAuthState != null)
-      AppStatus().refreshAuthState();
-    else
+    if (isOffline && AppStatus().refreshAuthState != null) {
+      AppStatus().refreshAuthState!();
+    } else {
       await FirebaseAuth.instance.signOut();
+    }
   }
 
   static Future<void> _login(
@@ -42,13 +40,13 @@ class FirebaseService {
         log.info('already logged in $currentUser');
       } else {
         final login = await loginFunc();
-        AppStatus().loggedUser = login?.user;
-        log.info('logged in ${login?.user}');
+        AppStatus().loggedUser = login.user;
+        log.info('logged in ${login.user}');
       }
     } catch (e) {
       log.warning('login error $e');
       AppStatus().loggedUser = null;
-      throw e;
+      rethrow;
     }
   }
 }

@@ -2,16 +2,15 @@ import 'package:bc4f/screens/barcodes/form/components/barcode-form-body.dart';
 import 'package:bc4f/utils/constants.dart';
 import 'package:bc4f/widget/components/tags.dart';
 import 'package:bc4f/widget/layout/scaffold.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:bc4f/model/barcode.dart';
 
 class BarcodeForm extends StatelessWidget {
   static const route = '/barcodes/form';
 
-  final Barcode barcode;
+  final Barcode? barcode;
 
-  const BarcodeForm({Key key, this.barcode}) : super(key: key);
+  const BarcodeForm({super.key, this.barcode});
 
   @override
   Widget build(BuildContext context) {
@@ -19,34 +18,33 @@ class BarcodeForm extends StatelessWidget {
     return Bc4fScaffold(
       title: Text(isNew ? 'Add barcode' : 'Edit barcode'),
       subtitle: isNew
-          ? Text('Add a new barcode')
+          ? const Text('Add a new barcode')
           : Column(
               children: [
                 Padding(
                   padding: const EdgeInsets.only(bottom: kDefaultPadding / 2),
                   child: Text(
-                    barcode.code,
+                    barcode!.code ?? '',
                     textAlign: TextAlign.center,
                   ),
                 ),
-                if (barcode.name != null && barcode.name.isNotEmpty)
+                if (barcode!.name?.isNotEmpty ?? false)
                   Padding(
                     padding: const EdgeInsets.only(bottom: kDefaultPadding / 2),
                     child: Text(
-                      barcode.name,
+                      barcode!.name!,
                       textAlign: TextAlign.center,
                     ),
                   ),
-                if (barcode.description != null &&
-                    barcode.description.isNotEmpty)
+                if (barcode!.description?.isNotEmpty ?? false)
                   Padding(
                     padding: const EdgeInsets.only(bottom: kDefaultPadding / 2),
                     child: Text(
-                      barcode.description,
+                      barcode!.description!,
                       textAlign: TextAlign.center,
                     ),
                   ),
-                TagList(tags: barcode.tags)
+                TagList(tags: barcode!.tags),
               ],
             ),
       body: BarcodeFormBody(barcode: barcode),

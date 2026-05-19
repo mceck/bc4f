@@ -15,16 +15,16 @@ class GroupDetail extends StatefulWidget {
 
   final BarcodeGroup group;
 
-  const GroupDetail({Key key, this.group}) : super(key: key);
+  const GroupDetail({super.key, required this.group});
 
   @override
-  _GroupDetailState createState() => _GroupDetailState();
+  State<GroupDetail> createState() => _GroupDetailState();
 }
 
 class _GroupDetailState extends State<GroupDetail> {
   List<String> tagFilters = [];
 
-  void onTagFilterChange(filters) {
+  void onTagFilterChange(List<String> filters) {
     setState(() {
       tagFilters = filters;
     });
@@ -46,15 +46,15 @@ class _GroupDetailState extends State<GroupDetail> {
   Widget build(BuildContext context) {
     return Bc4fScaffold(
       onTagFilterChange: onTagFilterChange,
-      title: Text('Group: ${widget.group.name}'),
+      title: Text('Group: ${widget.group.name ?? ''}'),
       subtitle: Column(
         children: [
-          Text(widget.group.description),
-          SizedBox(height: kDefaultPadding),
-          Text(
+          Text(widget.group.description ?? ''),
+          const SizedBox(height: kDefaultPadding),
+          const Text(
             'View, add, edit or delete barcodes for this group',
             textAlign: TextAlign.center,
-          )
+          ),
         ],
       ),
       actionEdit: () {
@@ -69,15 +69,13 @@ class _GroupDetailState extends State<GroupDetail> {
             GroupDetailBody(barcodes: filterList(barcodeProvider.barcodes)),
       ),
       floatAction: FloatingActionButton(
-        child: Icon(Icons.add),
         onPressed: () {
           log.info('new barcode for group');
           Navigator.of(context).pushNamed(BarcodeForm.route, arguments: {
-            'barcode': Barcode(
-              group: widget.group.uid,
-            )
+            'barcode': Barcode(group: widget.group.uid),
           });
         },
+        child: const Icon(Icons.add),
       ),
     );
   }

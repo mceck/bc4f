@@ -1,11 +1,7 @@
 # bc4f
 
-A new Flutter project.
+Barcode organizer app
 
 ## Getting Started
 
-fill web/index.html:46 with firebase config json
-
-fill android/app/google-services.json with firebase config json
-
-fill lib/utils/constants.dart GIPHY_API_KEY with giphy api key
+`flutterfire configure` to link the project to your Firebase.

@@ -10,21 +10,25 @@ import 'components/search-body.dart';
 class SearchScreen extends StatefulWidget {
   static const route = '/search';
 
-  final String search;
-  final List<String> tagFilters;
-  final List<String> groupFilters;
+  final String? search;
+  final List<String>? tagFilters;
+  final List<String>? groupFilters;
 
-  const SearchScreen({Key key, this.search, this.tagFilters, this.groupFilters})
-      : super(key: key);
+  const SearchScreen({
+    super.key,
+    this.search,
+    this.tagFilters,
+    this.groupFilters,
+  });
 
   @override
-  _SearchScreenState createState() => _SearchScreenState();
+  State<SearchScreen> createState() => _SearchScreenState();
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  String search;
-  List<String> tagFilters;
-  List<String> groupFilters;
+  late String search;
+  late List<String> tagFilters;
+  late List<String> groupFilters;
 
   @override
   void initState() {
@@ -35,25 +39,20 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   bool _filterFunc(Barcode barcode) {
-    bool check = true;
-    //tag filter
-    check = tagFilters.every((tf) => barcode.tags.contains(tf));
-    if (!check) return false;
-    //group filter
-    check = groupFilters.isEmpty;
-    check = check || groupFilters.any((gf) => barcode.group == gf);
-    if (!check) return false;
-    //word filter
-    check = search.isEmpty;
-    check = check ||
-        (barcode.code?.toLowerCase()?.contains(search.toLowerCase()) ?? false);
-    check = check ||
-        (barcode.name?.toLowerCase()?.contains(search.toLowerCase()) ?? false);
-    check = check ||
-        (barcode.description?.toLowerCase()?.contains(search.toLowerCase()) ??
-            false);
-    if (!check) return false;
-
+    // tag filter
+    if (!tagFilters.every((tf) => barcode.tags.contains(tf))) return false;
+    // group filter
+    if (groupFilters.isNotEmpty &&
+        !groupFilters.any((gf) => barcode.group == gf)) return false;
+    // word filter
+    if (search.isNotEmpty) {
+      final q = search.toLowerCase();
+      final inCode = barcode.code?.toLowerCase().contains(q) ?? false;
+      final inName = barcode.name?.toLowerCase().contains(q) ?? false;
+      final inDesc =
+          barcode.description?.toLowerCase().contains(q) ?? false;
+      if (!inCode && !inName && !inDesc) return false;
+    }
     return true;
   }
 
@@ -67,23 +66,17 @@ class _SearchScreenState extends State<SearchScreen> {
     final barcodes = filteredBarcodes;
     return Bc4fScaffold(
       onSearch: (String str) {
-        setState(() {
-          search = str;
-        });
+        setState(() => search = str);
       },
       onTagFilterChange: (List<String> filters) {
-        setState(() {
-          tagFilters = filters;
-        });
+        setState(() => tagFilters = filters);
       },
       tagFilters: tagFilters,
       groupFilters: groupFilters,
       onGroupFilterChange: (List<String> filters) {
-        setState(() {
-          groupFilters = filters;
-        });
+        setState(() => groupFilters = filters);
       },
-      title: Text('Search barcodes'),
+      title: const Text('Search barcodes'),
       backgroundImage: Images.bc1,
       body: SearchBody(barcodes: barcodes),
     );

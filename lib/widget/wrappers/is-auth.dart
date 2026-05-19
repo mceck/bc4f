@@ -7,10 +7,10 @@ import 'package:bc4f/utils/logger.dart';
 class IsAuth extends StatefulWidget {
   final Widget child;
 
-  IsAuth({Key key, this.child}) : super(key: key);
+  const IsAuth({super.key, required this.child});
 
   @override
-  _IsAuthState createState() => _IsAuthState();
+  State<IsAuth> createState() => _IsAuthState();
 }
 
 class _IsAuthState extends State<IsAuth> {
@@ -32,23 +32,22 @@ class _IsAuthState extends State<IsAuth> {
   Widget build(BuildContext context) {
     return AppStatus().offlineMode
         ? widget.child
-        : StreamBuilder<User>(
+        : StreamBuilder<User?>(
             stream: authStream,
             builder: (ctx, snapshot) {
               log.info('auth changed ${snapshot.data}');
-              if (snapshot.connectionState == ConnectionState.waiting)
-                return MaterialApp(
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const MaterialApp(
                   home: Scaffold(
-                    body: Center(
-                      child: CircularProgressIndicator(),
-                    ),
+                    body: Center(child: CircularProgressIndicator()),
                   ),
                 );
+              }
               if (snapshot.hasData) {
                 AppStatus().loggedUser = snapshot.data;
                 return widget.child;
               }
-              return LoginScreen();
+              return const LoginScreen();
             });
   }
 }

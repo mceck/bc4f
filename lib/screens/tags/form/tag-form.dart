@@ -8,9 +8,9 @@ import 'components/tag-form-body.dart';
 class TagForm extends StatelessWidget {
   static const route = '/tags/form';
 
-  final Tag tag;
+  final Tag? tag;
 
-  const TagForm({Key key, this.tag}) : super(key: key);
+  const TagForm({super.key, this.tag});
 
   @override
   Widget build(BuildContext context) {
@@ -18,22 +18,20 @@ class TagForm extends StatelessWidget {
     return Bc4fScaffold(
       title: Text(isNew ? 'Add tag' : 'Edit tag'),
       subtitle: isNew
-          ? Text('Add a new tag')
+          ? const Text('Add a new tag')
           : Column(
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: List.filled(
-                      3,
-                      Icon(
-                        Icons.label,
-                        color: tag.color,
-                      )),
+                    3,
+                    Icon(Icons.label, color: tag!.color),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: kDefaultPadding / 2),
                   child: Text(
-                    tag.name,
+                    tag!.name ?? '',
                     textAlign: TextAlign.center,
                   ),
                 ),

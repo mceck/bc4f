@@ -12,7 +12,8 @@ import 'package:bc4f/screens/not-found/not-found.dart';
 
 class Routing {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
-    final Map<String, dynamic> args = settings.arguments ?? {};
+    final Map<String, dynamic> args =
+        (settings.arguments as Map<String, dynamic>?) ?? {};
     Route<dynamic> route;
 
     switch (settings.name) {
@@ -32,7 +33,7 @@ class Routing {
          * @args: 
          *      groups: List<BarcodeGroup> if null or empty invite to add some group
          */
-        route = _getPageRoute(GroupView(groups: args['groups']), settings);
+        route = _getPageRoute(const GroupView(), settings);
         break;
       case GroupDetail.route:
         /**
@@ -59,7 +60,7 @@ class Routing {
          * @args: 
          *      tags: List<Tags> if null or empty invite to add some tag
          */
-        route = _getPageRoute(TagView(tags: args['tags']), settings);
+        route = _getPageRoute(const TagView(), settings);
         break;
       case BarcodeForm.route:
         /**

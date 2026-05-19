@@ -9,81 +9,91 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:reorderables/reorderables.dart';
 
 class TagViewBody extends StatelessWidget {
-  final readOnly;
+  final bool readOnly;
+
   const TagViewBody({
-    Key key,
-    @required this.tags,
+    super.key,
+    required this.tags,
     this.readOnly = false,
-  }) : super(key: key);
+  });
 
   final List<Tag> tags;
 
   @override
   Widget build(BuildContext context) {
-    print(MediaQuery.of(context).size.width);
     return ReorderableWrap(
-        runSpacing: kDefaultPadding / 2,
-        spacing: kDefaultPadding / 2,
-        children: tags
-            .map((tag) => SizedBox(
-                  width: MediaQuery.of(context).size.width >= 410
-                      ? 185
-                      : (MediaQuery.of(context).size.width -
-                              kDefaultPadding * 3) /
-                          2,
-                  child: GestureDetector(
-                    onTap: () => Navigator.of(context).pushNamedAndRemoveUntil(
-                      SearchScreen.route,
-                      (route) => false,
-                      arguments: {
-                        'tagFilters': [tag.uid]
-                      },
-                    ),
-                    child: Card(
-                      clipBehavior: Clip.antiAlias,
-                      child: Slidable(
-                        actionPane: SlidableDrawerActionPane(),
-                        actionExtentRatio: 0.25,
-                        child: Center(
-                          child: ListTile(
-                            leading: Icon(
-                              Icons.label,
-                              color: tag.color,
-                            ),
-                            title: Text(tag.name ?? 'null'),
+      runSpacing: kDefaultPadding / 2,
+      spacing: kDefaultPadding / 2,
+      children: tags
+          .map(
+            (tag) => SizedBox(
+              width: MediaQuery.of(context).size.width >= 410
+                  ? 185
+                  : (MediaQuery.of(context).size.width - kDefaultPadding * 3) /
+                      2,
+              child: GestureDetector(
+                onTap: () {
+                  if (tag.uid == null) return;
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    SearchScreen.route,
+                    (route) => false,
+                    arguments: {
+                      'tagFilters': [tag.uid!],
+                    },
+                  );
+                },
+                child: Card(
+                  clipBehavior: Clip.antiAlias,
+                  child: Slidable(
+                    startActionPane: readOnly
+                        ? null
+                        : ActionPane(
+                            motion: const DrawerMotion(),
+                            extentRatio: 0.25,
+                            children: [
+                              SlidableAction(
+                                onPressed: (_) =>
+                                    BarcodeService.deleteTag(tag.uid!),
+                                backgroundColor: Colors.red,
+                                foregroundColor: Colors.white,
+                                icon: Icons.delete,
+                                label: 'Delete',
+                              ),
+                            ],
                           ),
-                        ),
-                        actions: readOnly
-                            ? null
-                            : [
-                                IconSlideAction(
-                                  caption: 'Delete',
-                                  color: Colors.red,
-                                  icon: Icons.delete,
-                                  onTap: () =>
-                                      BarcodeService.deleteTag(tag.uid),
-                                ),
-                              ],
-                        secondaryActions: readOnly
-                            ? null
-                            : [
-                                IconSlideAction(
-                                  caption: 'Edit',
-                                  color: Colors.blue,
-                                  icon: Icons.edit,
-                                  onTap: () => Navigator.of(context).pushNamed(
-                                      TagForm.route,
-                                      arguments: {'tag': tag}),
-                                ),
-                              ],
+                    endActionPane: readOnly
+                        ? null
+                        : ActionPane(
+                            motion: const DrawerMotion(),
+                            extentRatio: 0.25,
+                            children: [
+                              SlidableAction(
+                                onPressed: (_) => Navigator.of(context)
+                                    .pushNamed(TagForm.route,
+                                        arguments: {'tag': tag}),
+                                backgroundColor: Colors.blue,
+                                foregroundColor: Colors.white,
+                                icon: Icons.edit,
+                                label: 'Edit',
+                              ),
+                            ],
+                          ),
+                    child: Center(
+                      child: ListTile(
+                        leading: Icon(Icons.label, color: tag.color),
+                        title: Text(tag.name ?? 'null'),
                       ),
                     ),
                   ),
-                ))
-            .toList(),
-        onReorder: (from, to) {
-          log.info('from $from to $to');
-          BarcodeService.reorderTag(tags, from, to);
-        });
+                ),
+              ),
+            ),
+          )
+          .toList(),
+      onReorder: (from, to) {
+        log.info('from $from to $to');
+        BarcodeService.reorderTag(tags, from, to);
+      },
+    );
   }
 }

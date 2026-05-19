@@ -8,10 +8,10 @@ import 'form/group-form.dart';
 
 class GroupCard extends StatelessWidget {
   const GroupCard({
-    Key key,
-    @required this.group,
+    super.key,
+    required this.group,
     this.withSlideActions = false,
-  }) : super(key: key);
+  });
 
   final BarcodeGroup group;
   final bool withSlideActions;
@@ -20,17 +20,35 @@ class GroupCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final h5 = Theme.of(context)
         .textTheme
-        .headline5
-        .copyWith(color: Colors.white, fontWeight: FontWeight.bold);
+        .headlineSmall
+        ?.copyWith(color: Colors.white, fontWeight: FontWeight.bold);
     final fallbackImg = Container(
       color: Theme.of(context).primaryColor,
       child: Center(
-        child: Text(
-          group.name,
-          style: h5,
-        ),
+        child: Text(group.name ?? '', style: h5),
       ),
     );
+    final cardContent = Column(
+      children: [
+        Expanded(
+          flex: 2,
+          child: Image.network(
+            group.imgUrl ?? '',
+            loadingBuilder: (ctx, child, progress) =>
+                progress != null ? fallbackImg : child,
+            errorBuilder: (ctx, error, stackTrace) => fallbackImg,
+          ),
+        ),
+        Flexible(
+          flex: 1,
+          child: ListTile(
+            title: Text(group.name ?? 'null'),
+            subtitle: Text(group.description ?? 'null'),
+          ),
+        ),
+      ],
+    );
+
     return GestureDetector(
       onTap: () => Navigator.of(context).pushNamed(
         GroupDetail.route,
@@ -38,52 +56,40 @@ class GroupCard extends StatelessWidget {
       ),
       child: Card(
         clipBehavior: Clip.antiAlias,
-        child: Slidable(
-          actionPane: SlidableDrawerActionPane(),
-          actionExtentRatio: 0.25,
-          child: Column(
-            children: [
-              Expanded(
-                flex: 2,
-                child: Image.network(
-                  group.imgUrl ?? '',
-                  loadingBuilder: (ctx, child, progress) =>
-                      progress != null ? fallbackImg : child,
-                  errorBuilder: (ctx, error, stackTrace) => fallbackImg,
+        child: withSlideActions
+            ? Slidable(
+                startActionPane: ActionPane(
+                  motion: const DrawerMotion(),
+                  extentRatio: 0.25,
+                  children: [
+                    SlidableAction(
+                      onPressed: (_) =>
+                          BarcodeService.deleteGroup(group.uid!),
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                      icon: Icons.delete,
+                      label: 'Delete',
+                    ),
+                  ],
                 ),
-              ),
-              Flexible(
-                flex: 1,
-                child: ListTile(
-                  title: Text(group.name ?? 'null'),
-                  subtitle: Text(group.description ?? 'null'),
+                endActionPane: ActionPane(
+                  motion: const DrawerMotion(),
+                  extentRatio: 0.25,
+                  children: [
+                    SlidableAction(
+                      onPressed: (_) => Navigator.of(context).pushNamed(
+                          GroupForm.route,
+                          arguments: {'group': group}),
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                      icon: Icons.edit,
+                      label: 'Edit',
+                    ),
+                  ],
                 ),
+                child: cardContent,
               )
-            ],
-          ),
-          actions: withSlideActions
-              ? [
-                  IconSlideAction(
-                    caption: 'Delete',
-                    color: Colors.red,
-                    icon: Icons.delete,
-                    onTap: () => BarcodeService.deleteGroup(group.uid),
-                  ),
-                ]
-              : null,
-          secondaryActions: withSlideActions
-              ? [
-                  IconSlideAction(
-                    caption: 'Edit',
-                    color: Colors.blue,
-                    icon: Icons.edit,
-                    onTap: () => Navigator.of(context).pushNamed(
-                        GroupForm.route,
-                        arguments: {'group': group}),
-                  ),
-                ]
-              : null,
-        ),
+            : cardContent,
       ),
     );
   }

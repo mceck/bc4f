@@ -5,53 +5,50 @@ import 'package:provider/provider.dart';
 
 class EditableGroupList extends StatefulWidget {
   final void Function(List<String> groups) onGroupFilterChange;
-  final List<String> groups;
-  final TextStyle textStyle;
+  final List<String>? groups;
+  final TextStyle? textStyle;
 
-  const EditableGroupList(
-      {Key key,
-      @required this.onGroupFilterChange,
-      this.groups,
-      this.textStyle})
-      : super(key: key);
+  const EditableGroupList({
+    super.key,
+    required this.onGroupFilterChange,
+    this.groups,
+    this.textStyle,
+  });
 
   @override
-  _EditableGroupListState createState() => _EditableGroupListState();
+  State<EditableGroupList> createState() => _EditableGroupListState();
 }
 
 class _EditableGroupListState extends State<EditableGroupList> {
-  List<String> groups;
+  late List<String?> groups;
 
-  List<String> get notNullgroups =>
-      groups.where((t) => t != null && t.isNotEmpty).toList();
+  List<String> get notNullGroups =>
+      groups.whereType<String>().where((t) => t.isNotEmpty).toList();
 
   @override
   void initState() {
-    groups = widget.groups?.sublist(0) ?? [];
+    groups = List<String?>.from(widget.groups ?? []);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final allgroups = Provider.of<GroupProvider>(context).groups;
-    if (groups == null || allgroups.length == 0) return Container();
+    if (allgroups.isEmpty) return const SizedBox.shrink();
     return SizedBox(
       height: 40,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            Text('Groups: '),
+            const Text('Groups: '),
             IconButton(
               icon: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(50),
                   color: Colors.white54,
                 ),
-                child: Icon(
-                  Icons.add,
-                  color: Colors.green[600],
-                ),
+                child: Icon(Icons.add, color: Colors.green[600]),
               ),
               onPressed: () {
                 setState(() {
@@ -60,54 +57,50 @@ class _EditableGroupListState extends State<EditableGroupList> {
               },
             ),
             ...groups.map(
-              (groupId) {
-                return Row(
-                  children: [
-                    SelectList(
-                      key: ValueKey(groupId),
-                      list: allgroups.map((t) => t.uid).toList(),
-                      hint: Text(
-                        'groups',
-                        style: widget.textStyle,
+              (groupId) => Row(
+                children: [
+                  SelectList(
+                    key: ValueKey(groupId),
+                    list: allgroups.map((t) => t.uid ?? '').toList(),
+                    hint: Text('groups', style: widget.textStyle),
+                    onChanged: (val) {
+                      final idx = groups.indexOf(groupId);
+                      if (idx >= 0) {
+                        setState(() {
+                          groups[idx] = val;
+                          widget.onGroupFilterChange(notNullGroups);
+                        });
+                      }
+                    },
+                    value: groupId,
+                    display: (id) {
+                      final grp = allgroups
+                          .where((g) => g.uid == id)
+                          .firstOrNull;
+                      return Text(grp?.name ?? id);
+                    },
+                    showUnderline: false,
+                    showIcon: false,
+                  ),
+                  IconButton(
+                    icon: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        color: Colors.white54,
                       ),
-                      onChanged: (val) {
-                        final idx = groups.indexOf(groupId);
-                        if (idx >= 0)
-                          setState(() {
-                            groups[idx] = val;
-                            widget.onGroupFilterChange(notNullgroups);
-                          });
-                      },
-                      value: groupId,
-                      display: (id) => Text(allgroups
-                              .firstWhere((g) => g.uid == id,
-                                  orElse: () => null)
-                              ?.name ??
-                          'null'),
-                      showUnderline: false,
-                      showIcon: false,
+                      child: Icon(
+                          Icons.cancel_outlined, color: Colors.red[700]),
                     ),
-                    IconButton(
-                        icon: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                            color: Colors.white54,
-                          ),
-                          child: Icon(
-                            Icons.cancel_outlined,
-                            color: Colors.red[700],
-                          ),
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            groups.remove(groupId);
-                            widget.onGroupFilterChange(notNullgroups);
-                          });
-                        }),
-                  ],
-                );
-              },
-            ).toList(),
+                    onPressed: () {
+                      setState(() {
+                        groups.remove(groupId);
+                        widget.onGroupFilterChange(notNullGroups);
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

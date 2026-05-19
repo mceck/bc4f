@@ -15,31 +15,34 @@ import 'package:uuid/uuid.dart';
 /// Classe di utili di tipo _singleton che permette di memorizzare in maniera statica alcune informazione usate in tutto l'appliccativo.
 class AppStatus {
   final navKey = GlobalKey<NavigatorState>();
-  final authStorage = kIsWeb ? null : FlutterSecureStorage();
+  final FlutterSecureStorage? authStorage =
+      kIsWeb ? null : const FlutterSecureStorage();
   PrintAppender consoleLog = PrintAppender(formatter: LogPrinter());
 
-  User loggedUser;
+  User? loggedUser;
   bool offlineMode = false;
-  Function refreshAuthState; // mammamia che brutto modo di refreshare il login
+  VoidCallback? refreshAuthState;
 
-  Uuid uuid = Uuid();
+  final Uuid uuid = const Uuid();
 
   Future<void> resetProviders() async {
-    final context = navKey?.currentState?.overlay?.context;
-    await Provider.of<BarcodeProvider>(context, listen: false)?.close();
-    await Provider.of<GroupProvider>(context, listen: false)?.close();
-    await Provider.of<TagProvider>(context, listen: false)?.close();
-    await Provider.of<RecentBarcodeProvider>(context, listen: false)?.close();
+    final context = navKey.currentState?.overlay?.context;
+    if (context == null) return;
+    await Provider.of<BarcodeProvider>(context, listen: false).close();
+    await Provider.of<GroupProvider>(context, listen: false).close();
+    await Provider.of<TagProvider>(context, listen: false).close();
+    await Provider.of<RecentBarcodeProvider>(context, listen: false).close();
 
     offlineMode = false;
     OfflineService().dispose();
   }
 
   Future<void> saveProvidersToLocal() async {
-    final context = navKey?.currentState?.overlay?.context;
-    await Provider.of<BarcodeProvider>(context, listen: false)?.saveToLocal();
-    await Provider.of<GroupProvider>(context, listen: false)?.saveToLocal();
-    await Provider.of<TagProvider>(context, listen: false)?.saveToLocal();
+    final context = navKey.currentState?.overlay?.context;
+    if (context == null) return;
+    await Provider.of<BarcodeProvider>(context, listen: false).saveToLocal();
+    await Provider.of<GroupProvider>(context, listen: false).saveToLocal();
+    await Provider.of<TagProvider>(context, listen: false).saveToLocal();
   }
 
   static final AppStatus _singleton = AppStatus._internal();

@@ -5,23 +5,23 @@ import 'package:bc4f/utils/logger.dart';
 import 'package:bc4f/widget/layout/drawer.dart';
 
 class Bc4fScaffold extends StatelessWidget {
-  final Widget body;
-  final Widget floatAction;
-  final Widget bottomNavBar;
-  final void Function() actionNew;
-  final void Function() actionEdit;
-  final void Function(String search) onSearch;
-  final void Function(List<String> filter) onTagFilterChange;
-  final void Function(List<String> filter) onGroupFilterChange;
-  final Widget title;
-  final Widget subtitle;
-  final List<String> tagFilters;
-  final List<String> groupFilters;
+  final Widget? body;
+  final Widget? floatAction;
+  final Widget? bottomNavBar;
+  final void Function()? actionNew;
+  final void Function()? actionEdit;
+  final void Function(String search)? onSearch;
+  final void Function(List<String> filter)? onTagFilterChange;
+  final void Function(List<String> filter)? onGroupFilterChange;
+  final Widget? title;
+  final Widget? subtitle;
+  final List<String>? tagFilters;
+  final List<String>? groupFilters;
   final bool withExtendedAppbar;
-  final String backgroundImage;
+  final String? backgroundImage;
 
   const Bc4fScaffold({
-    Key key,
+    super.key,
     this.body,
     this.floatAction,
     this.bottomNavBar,
@@ -36,23 +36,18 @@ class Bc4fScaffold extends StatelessWidget {
     this.withExtendedAppbar = true,
     this.groupFilters,
     this.backgroundImage,
-  }) : super(key: key);
+  });
 
-  PreferredSizeWidget buildAppBar(BuildContext context) {
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
-      title: title ?? Text('BC4F'),
+      backgroundColor: Colors.redAccent,
+      title: title ?? const Text('BC4F'),
       elevation: 0,
       actions: [
         if (actionEdit != null)
-          IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: actionEdit,
-          ),
+          IconButton(icon: const Icon(Icons.edit), onPressed: actionEdit),
         if (actionNew != null)
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: actionNew,
-          ),
+          IconButton(icon: const Icon(Icons.add), onPressed: actionNew),
       ],
     );
   }
@@ -60,9 +55,9 @@ class Bc4fScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Bc4fDrawer(),
-      appBar: buildAppBar(context),
-      body: DoubleBackPop(
+      drawer: const Bc4fDrawer(),
+      appBar: _buildAppBar(context),
+      body: _DoubleBackPop(
         child: withExtendedAppbar
             ? WrapWithExpandedAppbar(
                 child: body,
@@ -74,43 +69,50 @@ class Bc4fScaffold extends StatelessWidget {
                 groupFilters: groupFilters,
                 backgroundImage: backgroundImage,
               )
-            : body,
+            : body ?? const SizedBox.shrink(),
       ),
       floatingActionButton: floatAction,
-      bottomNavigationBar: bottomNavBar ?? Bc4fBottomNavbar(),
+      bottomNavigationBar: bottomNavBar ?? const Bc4fBottomNavbar(),
     );
   }
 }
 
-class DoubleBackPop extends StatefulWidget {
-  final child;
+class _DoubleBackPop extends StatefulWidget {
+  final Widget child;
 
-  DoubleBackPop({this.child});
+  const _DoubleBackPop({required this.child});
 
   @override
-  _DoubleBackPopState createState() => _DoubleBackPopState();
+  State<_DoubleBackPop> createState() => _DoubleBackPopState();
 }
 
-class _DoubleBackPopState extends State<DoubleBackPop> {
-  DateTime currentBackPressTime;
+class _DoubleBackPopState extends State<_DoubleBackPop> {
+  DateTime? _currentBackPressTime;
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        _onWillPop(context);
+      },
       child: widget.child,
-      onWillPop: () => onWillPop(context),
     );
   }
 
-  Future<bool> onWillPop(BuildContext context) {
-    if (Navigator.of(context).canPop()) return Future.value(true);
-    DateTime now = DateTime.now();
-    if (currentBackPressTime == null ||
-        now.difference(currentBackPressTime) > Duration(seconds: 2)) {
-      currentBackPressTime = now;
-      log.info('snack');
-      Scaffold.of(context).showSnackBar(
-        SnackBar(
+  void _onWillPop(BuildContext context) {
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+      return;
+    }
+    final now = DateTime.now();
+    if (_currentBackPressTime == null ||
+        now.difference(_currentBackPressTime!) > const Duration(seconds: 2)) {
+      _currentBackPressTime = now;
+      log.info('double back requested');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
           backgroundColor: Colors.black87,
           content: Text(
             'Premi 2 volte per uscire',
@@ -119,8 +121,9 @@ class _DoubleBackPopState extends State<DoubleBackPop> {
           duration: Duration(seconds: 2),
         ),
       );
-      return Future.value(false);
+    } else {
+      // chiudi l'app
+      Navigator.of(context).pop();
     }
-    return Future.value(true);
   }
 }

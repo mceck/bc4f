@@ -7,9 +7,9 @@ import 'package:bc4f/model/group.dart';
 class GroupForm extends StatelessWidget {
   static const route = '/groups/form';
 
-  final BarcodeGroup group;
+  final BarcodeGroup? group;
 
-  const GroupForm({Key key, this.group}) : super(key: key);
+  const GroupForm({super.key, this.group});
 
   @override
   Widget build(BuildContext context) {
@@ -18,21 +18,21 @@ class GroupForm extends StatelessWidget {
     return Bc4fScaffold(
       title: Text(isNew ? 'Add group' : 'Edit group'),
       subtitle: isNew
-          ? Text('Add a new group')
+          ? const Text('Add a new group')
           : Column(
               children: [
                 Padding(
                   padding: const EdgeInsets.only(bottom: kDefaultPadding / 2),
                   child: Text(
-                    group.name,
+                    group!.name ?? '',
                     textAlign: TextAlign.center,
                   ),
                 ),
-                if (group.description != null && group.description.isNotEmpty)
+                if (group!.description?.isNotEmpty ?? false)
                   Padding(
                     padding: const EdgeInsets.only(bottom: kDefaultPadding / 2),
                     child: Text(
-                      group.description,
+                      group!.description!,
                       textAlign: TextAlign.center,
                     ),
                   ),

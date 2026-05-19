@@ -9,28 +9,27 @@ import 'package:flutter/material.dart';
 
 class BarcodeProvider with ChangeNotifier {
   List<Barcode> barcodes = [];
-  StreamSubscription subs;
+  StreamSubscription<List<Barcode>>? subs;
 
   BarcodeProvider({bool autoload = true}) {
     if (autoload) load();
   }
 
   void load() {
-    if (subs == null)
-      subs = BarcodeService.streamBarcodes().listen((snap) {
-        barcodes = snap;
-        notifyListeners();
-      });
+    subs ??= BarcodeService.streamBarcodes().listen((snap) {
+      barcodes = snap;
+      notifyListeners();
+    });
   }
 
   Future<void> saveToLocal() async {
     final list = barcodes.map((b) => b.toJson()).toList();
     final jsonStr = json.encode(list);
-    Prefs().instance.setString(LOCALSTORE_BARCODES, jsonStr);
+    await Prefs().instance?.setString(LOCALSTORE_BARCODES, jsonStr);
   }
 
   Future<void> close() async {
-    if (subs != null) await subs.cancel();
+    await subs?.cancel();
     subs = null;
     barcodes = [];
     notifyListeners();

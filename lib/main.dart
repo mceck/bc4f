@@ -12,32 +12,30 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  // init local storage
   WidgetsFlutterBinding.ensureInitialized();
   Prefs();
   AppStatus();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return FirebaseApplication(
       child: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle(
+        value: const SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
         ),
-        child: App(),
+        child: const App(),
       ),
     );
   }
 }
 
 class App extends StatelessWidget {
-  const App({
-    Key key,
-  }) : super(key: key);
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -54,13 +52,19 @@ class App extends StatelessWidget {
           navigatorKey: AppStatus().navKey,
           title: 'Bc4f',
           theme: ThemeData(
-            textTheme: TextTheme(subtitle1: TextStyle(fontSize: 18)),
+            useMaterial3: false,
             primarySwatch: Colors.red,
             primaryColor: Colors.redAccent,
-            buttonTheme: ThemeData.dark()
-                .buttonTheme
-                .copyWith(buttonColor: Colors.redAccent),
             visualDensity: VisualDensity.adaptivePlatformDensity,
+            textTheme: const TextTheme(
+              titleMedium: TextStyle(fontSize: 18),
+            ),
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.redAccent,
+                foregroundColor: Colors.white,
+              ),
+            ),
           ),
           onGenerateRoute: Routing.onGenerateRoute,
         ),

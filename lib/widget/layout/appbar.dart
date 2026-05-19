@@ -7,26 +7,26 @@ import 'package:bc4f/widget/components/tags.dart';
 import 'package:flutter/material.dart';
 
 class WrapWithExpandedAppbar extends StatelessWidget {
-  final Widget child;
-  final void Function(String search) onSearch;
-  final void Function(List<String> filter) onTagFilterChange;
-  final void Function(List<String> filter) onGroupFilterChange;
-  final Widget subtitle;
-  final List<String> tagFilters;
-  final List<String> groupFilters;
-  final String backgroundImage;
+  final Widget? child;
+  final void Function(String search)? onSearch;
+  final void Function(List<String> filter)? onTagFilterChange;
+  final void Function(List<String> filter)? onGroupFilterChange;
+  final Widget? subtitle;
+  final List<String>? tagFilters;
+  final List<String>? groupFilters;
+  final String? backgroundImage;
 
-  const WrapWithExpandedAppbar(
-      {Key key,
-      this.child,
-      this.onSearch,
-      this.onTagFilterChange,
-      this.onGroupFilterChange,
-      this.subtitle,
-      this.tagFilters,
-      this.groupFilters,
-      this.backgroundImage})
-      : super(key: key);
+  const WrapWithExpandedAppbar({
+    super.key,
+    this.child,
+    this.onSearch,
+    this.onTagFilterChange,
+    this.onGroupFilterChange,
+    this.subtitle,
+    this.tagFilters,
+    this.groupFilters,
+    this.backgroundImage,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +43,10 @@ class WrapWithExpandedAppbar extends StatelessWidget {
         ),
         Expanded(
           child: SingleChildScrollView(
-            physics: ClampingScrollPhysics(),
+            physics: const ClampingScrollPhysics(),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: kDefaultPadding),
               child: child,
             ),
           ),
@@ -58,29 +59,30 @@ class WrapWithExpandedAppbar extends StatelessWidget {
 class ExpandedAppbar extends StatelessWidget {
   static const _kDefaultImages = [Images.bc1, Images.bc2, Images.bc3];
 
-  final void Function(String search) onSearch;
-  final void Function(List<String> filter) onTagFilterChange;
-  final void Function(List<String> filter) onGroupFilterChange;
-  final Widget subtitle;
-  final List<String> tagFilters;
-  final List<String> groupFilters;
-  final String backgroundImage;
+  final void Function(String search)? onSearch;
+  final void Function(List<String> filter)? onTagFilterChange;
+  final void Function(List<String> filter)? onGroupFilterChange;
+  final Widget? subtitle;
+  final List<String>? tagFilters;
+  final List<String>? groupFilters;
+  final String? backgroundImage;
 
-  const ExpandedAppbar(
-      {Key key,
-      this.onSearch,
-      this.onTagFilterChange,
-      this.onGroupFilterChange,
-      this.subtitle,
-      this.tagFilters,
-      this.groupFilters,
-      this.backgroundImage})
-      : super(key: key);
+  const ExpandedAppbar({
+    super.key,
+    this.onSearch,
+    this.onTagFilterChange,
+    this.onGroupFilterChange,
+    this.subtitle,
+    this.tagFilters,
+    this.groupFilters,
+    this.backgroundImage,
+  });
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    String bgImg = backgroundImage ?? _kDefaultImages[Random().nextInt(3)];
+    final size = MediaQuery.of(context).size;
+    final bgImg =
+        backgroundImage ?? _kDefaultImages[Random().nextInt(3)];
     return SingleChildScrollView(
       child: Stack(
         children: [
@@ -88,25 +90,26 @@ class ExpandedAppbar extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 22),
             child: Container(
               width: double.infinity,
-              constraints: BoxConstraints(minHeight: size.height * 0.15),
+              constraints:
+                  BoxConstraints(minHeight: size.height * 0.15),
               padding: EdgeInsets.only(
                   bottom: onSearch != null ? kDefaultPadding * 3 : 0),
               decoration: BoxDecoration(
-                borderRadius:
-                    BorderRadius.vertical(bottom: Radius.circular(25)),
+                borderRadius: const BorderRadius.vertical(
+                    bottom: Radius.circular(25)),
                 color: Theme.of(context).primaryColor,
               ),
               child: DefaultTextStyle(
-                style: Theme.of(context).textTheme.subtitle1.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    shadows: [
-                      Shadow(
-                        blurRadius: 5,
-                        color: Colors.black,
-                      )
-                      // offset: Offset(-1, 1))
-                    ]),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium!
+                    .copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      shadows: const [
+                        Shadow(blurRadius: 5, color: Colors.black),
+                      ],
+                    ),
                 child: Stack(
                   children: [
                     Image.asset(
@@ -132,15 +135,18 @@ class ExpandedAppbar extends StatelessWidget {
                               ),
                             if (onGroupFilterChange != null)
                               EditableGroupList(
-                                onGroupFilterChange: onGroupFilterChange,
+                                onGroupFilterChange:
+                                    onGroupFilterChange!,
                                 groups: groupFilters,
-                                textStyle: TextStyle(color: Colors.white),
+                                textStyle: const TextStyle(
+                                    color: Colors.white),
                               ),
                             if (onTagFilterChange != null)
                               EditableTagList(
-                                onTagFilterChange: onTagFilterChange,
+                                onTagFilterChange: onTagFilterChange!,
                                 tags: tagFilters,
-                                textStyle: TextStyle(color: Colors.white),
+                                textStyle: const TextStyle(
+                                    color: Colors.white),
                               ),
                           ],
                         ),
@@ -163,7 +169,7 @@ class ExpandedAppbar extends StatelessWidget {
                       horizontal: kDefaultPadding * 2),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(50),
-                    boxShadow: [
+                    boxShadow: const [
                       BoxShadow(
                         blurRadius: 6,
                         offset: Offset(2, 4),
@@ -174,7 +180,7 @@ class ExpandedAppbar extends StatelessWidget {
                     color: Colors.white,
                   ),
                   child: TextField(
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       border: InputBorder.none,
                       hintText: 'Search...',
                     ),

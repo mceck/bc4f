@@ -5,23 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class TagFormBody extends StatefulWidget {
-  const TagFormBody({
-    Key key,
-    this.tag,
-  }) : super(key: key);
+  const TagFormBody({super.key, this.tag});
 
-  final Tag tag;
+  final Tag? tag;
 
   @override
-  _TagFormBodyState createState() => _TagFormBodyState();
+  State<TagFormBody> createState() => _TagFormBodyState();
 }
 
 class _TagFormBodyState extends State<TagFormBody> {
-  TextEditingController name;
-  Color color;
-  String error;
-
-  Tag _tag;
+  late TextEditingController name;
+  late Color color;
+  String? error;
+  late Tag _tag;
 
   @override
   void initState() {
@@ -33,7 +29,7 @@ class _TagFormBodyState extends State<TagFormBody> {
 
   @override
   void dispose() {
-    if (name != null) name.dispose();
+    name.dispose();
     super.dispose();
   }
 
@@ -42,20 +38,11 @@ class _TagFormBodyState extends State<TagFormBody> {
     _tag.color = color;
   }
 
-  void updateCtrls() {
-    name.text = _tag.name ?? '';
-    color = _tag.color;
-  }
-
   bool validate() {
-    setState(() {
-      error = null;
-    });
+    setState(() => error = null);
     updateForm();
-    if (_tag.name.isEmpty) {
-      setState(() {
-        error = 'name required';
-      });
+    if (_tag.name == null || _tag.name!.isEmpty) {
+      setState(() => error = 'name required');
       return false;
     }
     return true;
@@ -69,16 +56,18 @@ class _TagFormBodyState extends State<TagFormBody> {
 
   @override
   Widget build(BuildContext context) {
-    final errorStyle =
-        Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.red);
+    final errorStyle = Theme.of(context)
+        .textTheme
+        .bodyLarge
+        ?.copyWith(color: Colors.red);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextField(
           controller: name,
-          decoration: InputDecoration(labelText: 'tag'),
+          decoration: const InputDecoration(labelText: 'tag'),
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         Row(
           children: [
             Container(
@@ -89,62 +78,52 @@ class _TagFormBodyState extends State<TagFormBody> {
               width: 80,
               height: 20,
             ),
-            SizedBox(width: 30),
+            const SizedBox(width: 30),
             SizedBox(
               height: 30,
               child: FloatingActionButton(
-                  mini: true,
-                  child: Icon(
-                    Icons.color_lens,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text('Pick a color!'),
-                        content: SingleChildScrollView(
-                          child: ColorPicker(
-                            pickerColor: color,
-                            onColorChanged: (c) {
-                              setState(() {
-                                color = c;
-                              });
-                            },
-                            showLabel: true,
-                            pickerAreaHeightPercent: 0.8,
-                          ),
+                mini: true,
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Pick a color!'),
+                      content: SingleChildScrollView(
+                        child: ColorPicker(
+                          pickerColor: color,
+                          onColorChanged: (c) {
+                            setState(() => color = c);
+                          },
+                          pickerAreaHeightPercent: 0.8,
                         ),
-                        actions: <Widget>[
-                          TextButton(
-                            child: const Text('Ok'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ],
                       ),
-                    );
-                  }),
-            )
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text('Ok'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                child: const Icon(Icons.color_lens, color: Colors.white),
+              ),
+            ),
           ],
         ),
-        SizedBox(height: 20),
-        SizedBox(height: kDefaultPadding * 2),
+        const SizedBox(height: 20),
+        const SizedBox(height: kDefaultPadding * 2),
         Row(
           children: [
-            TextButton(
+            ElevatedButton(
               onPressed: save,
-              child: Text('Save'),
+              child: const Text('Save'),
             ),
             if (error != null)
               Padding(
                 padding: const EdgeInsets.only(left: kDefaultPadding),
-                child: Text(
-                  error,
-                  style: errorStyle,
-                ),
-              )
+                child: Text(error!, style: errorStyle),
+              ),
           ],
         ),
       ],

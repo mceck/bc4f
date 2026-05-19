@@ -1,7 +1,6 @@
 import 'package:bc4f/service/firebase-service.dart';
 import 'package:bc4f/service/offline-service.dart';
 import 'package:bc4f/utils/prefs.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:bc4f/screens/login/login.dart';
@@ -15,10 +14,10 @@ class LoginBody extends StatefulWidget {
   final LoginMode mode;
   final void Function(LoginMode) onSetMode;
 
-  const LoginBody({Key key, this.mode, this.onSetMode}) : super(key: key);
+  const LoginBody({super.key, required this.mode, required this.onSetMode});
 
   @override
-  _LoginBodyState createState() => _LoginBodyState();
+  State<LoginBody> createState() => _LoginBodyState();
 }
 
 class _LoginBodyState extends State<LoginBody> {
@@ -32,30 +31,28 @@ class _LoginBodyState extends State<LoginBody> {
 
   @override
   void initState() {
+    super.initState();
     if (kIsWeb) {
-      // saved email on web
-      _emailCtrl.text = Prefs().instance.getString(KEYSTORE_EMAIL) ?? '';
+      _emailCtrl.text =
+          Prefs().instance?.getString(KEYSTORE_EMAIL) ?? '';
     } else {
-      // autologin with mobile
-      AppStatus().authStorage?.readAll()?.then((keyStore) {
-        if (keyStore != null) {
-          final email = keyStore[KEYSTORE_EMAIL] ?? '';
-          final passwd = keyStore[KEYSTORE_PASSWORD] ?? '';
-          if (email.isNotEmpty && passwd.isNotEmpty) {
-            log.info('autologin $email');
-            loading = true;
-            FirebaseService.loginWithEmailAndPassword(email, passwd)
-                .catchError((error) {
-              setState(() {
-                _authError = 'Email o password errata';
-                _loading = false;
-              });
+      AppStatus().authStorage?.readAll().then((keyStore) {
+        final email = keyStore[KEYSTORE_EMAIL] ?? '';
+        final passwd = keyStore[KEYSTORE_PASSWORD] ?? '';
+        if (email.isNotEmpty && passwd.isNotEmpty) {
+          log.info('autologin $email');
+          _setLoading(true);
+          FirebaseService.loginWithEmailAndPassword(email, passwd)
+              .catchError((error) {
+            if (!mounted) return;
+            setState(() {
+              _authError = 'Email o password errata';
+              _loading = false;
             });
-          }
+          });
         }
       });
     }
-    super.initState();
   }
 
   @override
@@ -65,24 +62,25 @@ class _LoginBodyState extends State<LoginBody> {
     super.dispose();
   }
 
-  set loading(bool l) => setState(() => _loading = l);
-  bool get loading => _loading;
-  set rememberMe(bool r) => setState(() => _rememberMe = r);
+  void _setLoading(bool l) {
+    if (mounted) setState(() => _loading = l);
+  }
+
   bool get rememberMe => _rememberMe;
+  set rememberMe(bool r) => setState(() => _rememberMe = r);
 
   void _sendForm() {
     _setAllDirty();
-    if (!_formKey.currentState.validate()) return;
-    loading = true;
-    if (widget.mode == LoginMode.Login) {
-      //login
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+    _setLoading(true);
+    if (widget.mode == LoginMode.login) {
       final email = _emailCtrl.text.trim();
       final passwd = _passwdCtrl.text;
-      FirebaseService.loginWithEmailAndPassword(email, passwd).then((success) {
-        loading = false;
+      FirebaseService.loginWithEmailAndPassword(email, passwd).then((_) {
+        _setLoading(false);
         if (rememberMe) {
           if (kIsWeb) {
-            Prefs().instance.setString(KEYSTORE_EMAIL, email);
+            Prefs().instance?.setString(KEYSTORE_EMAIL, email);
           } else {
             AppStatus().authStorage?.write(
                   key: KEYSTORE_EMAIL,
@@ -94,17 +92,24 @@ class _LoginBodyState extends State<LoginBody> {
                 );
           }
         }
+      }).catchError((err) {
+        if (!mounted) return;
+        setState(() {
+          _authError = 'Email o password errata';
+          _loading = false;
+        });
       });
     } else {
       FirebaseService.signupWithEmailAndPassword(
               _emailCtrl.text, _passwdCtrl.text)
           .then((_) => log.info('signup success'))
-          .catchError(
-            (err) => setState(() {
-              _authError = 'Email già registrata';
-              _loading = false;
-            }),
-          );
+          .catchError((err) {
+        if (!mounted) return;
+        setState(() {
+          _authError = 'Email già registrata';
+          _loading = false;
+        });
+      });
     }
   }
 
@@ -113,45 +118,38 @@ class _LoginBodyState extends State<LoginBody> {
   }
 
   void _setDirty(String id, String value) {
-    if (value.isNotEmpty && !_dirty[id]) {
+    if (value.isNotEmpty && !(_dirty[id] ?? false)) {
       _dirty[id] = true;
-      _formKey.currentState.validate();
+      _formKey.currentState?.validate();
     }
   }
 
-  void resetForm() {
-    _dirty.keys.forEach((key) => _dirty[key] = false);
-    _emailCtrl.text = '';
-    _passwdCtrl.text = '';
+  String? _validate(String id, String? value) {
+    if (!(_dirty[id] ?? false)) return null;
+    switch (id) {
+      case 'email':
+        if (value == null || value.isEmpty) return 'Inserisci un indirizzo email';
+        final emailRegEx = RegExp(
+            r"^[a-zA-Z0-9.!#$%&'*+\-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+        if (!emailRegEx.hasMatch(value)) {
+          return 'Inserisci un indirizzo email valido';
+        }
+        break;
+      case 'password':
+        if (value == null || value.isEmpty) return 'Inserisci una password';
+        if (value.length < 6) return 'Inserisci una password più lunga';
+        break;
+    }
+    return null;
   }
 
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
 
-    String _validate(String id, String value) {
-      if (!_dirty[id]) return null;
-      switch (id) {
-        case 'email':
-          if (value.isEmpty) return 'Inserisci un indirizzo email';
-          final emailRegEx = RegExp(
-              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-          if (!emailRegEx.hasMatch(value))
-            return 'Inserisci un indirizzo email valido';
-          break;
-        case 'password':
-          if (value.isEmpty) return 'Inserisci una password';
-          if (value.length < 6) return 'Inserisci una password più lunga';
-          break;
-        default:
-      }
-
-      return null;
-    }
-
     return Center(
-      child: loading
-          ? CircularProgressIndicator()
+      child: _loading
+          ? const CircularProgressIndicator()
           : SizedBox(
               width: 350,
               height: 500,
@@ -159,57 +157,59 @@ class _LoginBodyState extends State<LoginBody> {
                 autovalidateMode: AutovalidateMode.always,
                 key: _formKey,
                 child: Column(
-                  children: <Widget>[
+                  children: [
                     Text(
-                      widget.mode == LoginMode.Login ? 'Login' : 'Registrati',
-                      style: TextStyle(color: Colors.grey[800], fontSize: 20),
+                      widget.mode == LoginMode.login ? 'Login' : 'Registrati',
+                      style: TextStyle(
+                          color: Colors.grey[800], fontSize: 20),
                     ),
                     TextFormField(
-                      onFieldSubmitted: (value) => _setDirty('email', value),
+                      onFieldSubmitted: (v) => _setDirty('email', v),
                       controller: _emailCtrl,
-                      decoration: InputDecoration(labelText: 'e-mail'),
-                      validator: (value) => _validate('email', value),
+                      decoration:
+                          const InputDecoration(labelText: 'e-mail'),
+                      validator: (v) => _validate('email', v),
                     ),
                     TextFormField(
-                      onFieldSubmitted: (value) => _setDirty('password', value),
+                      onFieldSubmitted: (v) => _setDirty('password', v),
                       controller: _passwdCtrl,
-                      decoration: InputDecoration(labelText: 'password'),
+                      decoration:
+                          const InputDecoration(labelText: 'password'),
                       obscureText: true,
-                      //onFieldSubmitted: (value) => _sendForm(auth),
-                      validator: (value) => _validate('password', value),
+                      validator: (v) => _validate('password', v),
                     ),
-                    SizedBox(height: 30),
-                    if (widget.mode == LoginMode.Login)
+                    const SizedBox(height: 30),
+                    if (widget.mode == LoginMode.login)
                       CheckboxListTile(
-                          controlAffinity: ListTileControlAffinity.leading,
-                          title: Text('Remember me'),
-                          value: rememberMe,
-                          onChanged: (val) {
-                            rememberMe = val;
-                          }),
-                    SizedBox(height: 30),
-                    RaisedButton(
-                      color: primaryColor,
-                      textColor: Colors.white,
+                        controlAffinity: ListTileControlAffinity.leading,
+                        title: const Text('Remember me'),
+                        value: rememberMe,
+                        onChanged: (val) => rememberMe = val ?? false,
+                      ),
+                    const SizedBox(height: 30),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: primaryColor,
+                          foregroundColor: Colors.white),
                       onPressed: _sendForm,
-                      child: Icon(Icons.send),
+                      child: const Icon(Icons.send),
                     ),
-                    SizedBox(height: 30),
+                    const SizedBox(height: 30),
                     if (AppStatus().refreshAuthState != null)
-                      FlatButton(
+                      TextButton(
+                        onPressed: () {
+                          OfflineService().init();
+                          AppStatus().offlineMode = true;
+                          AppStatus().refreshAuthState!();
+                        },
                         child: Text(
                           'Use offline',
                           style: TextStyle(color: primaryColor),
                         ),
-                        onPressed: () {
-                          OfflineService().init();
-                          AppStatus().offlineMode = true;
-                          AppStatus().refreshAuthState();
-                        },
                       ),
                     Text(
                       _authError,
-                      style: TextStyle(color: Colors.red),
+                      style: const TextStyle(color: Colors.red),
                     ),
                   ],
                 ),

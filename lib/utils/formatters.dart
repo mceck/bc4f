@@ -1,33 +1,37 @@
 import 'package:barcode/barcode.dart' as bcLib;
-import 'package:firebase_ml_vision/firebase_ml_vision.dart';
+import 'package:mobile_scanner/mobile_scanner.dart' as ms;
 
 class BcFormats {
-  static bcLib.BarcodeType mlToBc(BarcodeFormat fmt) {
-    if (fmt.value == BarcodeFormat.ean13.value)
-      return bcLib.BarcodeType.CodeEAN13;
-    if (fmt.value == BarcodeFormat.itf.value) return bcLib.BarcodeType.Itf;
-    if (fmt.value == BarcodeFormat.ean8.value)
-      return bcLib.BarcodeType.CodeEAN8;
-    if (fmt.value == BarcodeFormat.code39.value)
-      return bcLib.BarcodeType.Code39;
-    if (fmt.value == BarcodeFormat.code93.value)
-      return bcLib.BarcodeType.Code93;
-    if (fmt.value == BarcodeFormat.upca.value)
-      return bcLib.BarcodeType.CodeUPCA;
-    if (fmt.value == BarcodeFormat.upce.value)
-      return bcLib.BarcodeType.CodeUPCE;
-    if (fmt.value == BarcodeFormat.code128.value)
-      return bcLib.BarcodeType.Code128;
-    if (fmt.value == BarcodeFormat.qrCode.value)
-      return bcLib.BarcodeType.QrCode;
-    if (fmt.value == BarcodeFormat.codabar.value)
-      return bcLib.BarcodeType.Codabar;
-    if (fmt.value == BarcodeFormat.pdf417.value)
-      return bcLib.BarcodeType.PDF417;
-    if (fmt.value == BarcodeFormat.dataMatrix.value)
-      return bcLib.BarcodeType.DataMatrix;
-    if (fmt.value == BarcodeFormat.aztec.value) return bcLib.BarcodeType.Aztec;
-
-    return bcLib.BarcodeType.CodeEAN13;
+  static bcLib.BarcodeType mobileScannerToBc(ms.BarcodeFormat fmt) {
+    switch (fmt) {
+      case ms.BarcodeFormat.ean13:
+        return bcLib.BarcodeType.CodeEAN13;
+      case ms.BarcodeFormat.itf14:
+        return bcLib.BarcodeType.Itf;
+      case ms.BarcodeFormat.ean8:
+        return bcLib.BarcodeType.CodeEAN8;
+      case ms.BarcodeFormat.code39:
+        return bcLib.BarcodeType.Code39;
+      case ms.BarcodeFormat.code93:
+        return bcLib.BarcodeType.Code93;
+      case ms.BarcodeFormat.upcA:
+        return bcLib.BarcodeType.CodeUPCA;
+      case ms.BarcodeFormat.upcE:
+        return bcLib.BarcodeType.CodeUPCE;
+      case ms.BarcodeFormat.code128:
+        return bcLib.BarcodeType.Code128;
+      case ms.BarcodeFormat.qrCode:
+        return bcLib.BarcodeType.QrCode;
+      case ms.BarcodeFormat.codabar:
+        return bcLib.BarcodeType.Codabar;
+      case ms.BarcodeFormat.pdf417:
+        return bcLib.BarcodeType.PDF417;
+      case ms.BarcodeFormat.dataMatrix:
+        return bcLib.BarcodeType.DataMatrix;
+      case ms.BarcodeFormat.aztec:
+        return bcLib.BarcodeType.Aztec;
+      default:
+        return bcLib.BarcodeType.CodeEAN13;
+    }
   }
 }

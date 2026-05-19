@@ -12,45 +12,39 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class HomepageBody extends StatelessWidget {
-  const HomepageBody();
+  const HomepageBody({super.key});
 
   @override
   Widget build(BuildContext context) {
     final subtitle = Theme.of(context)
         .textTheme
-        .subtitle1
-        .copyWith(fontWeight: FontWeight.bold);
+        .titleMedium
+        ?.copyWith(fontWeight: FontWeight.bold);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.only(bottom: kDefaultPadding / 2),
-          child: RaisedButton.icon(
-            icon: Icon(
-              Icons.add,
-              color: Colors.white,
-            ),
-            label: Text('Add new barcode'),
-            color: Colors.green,
-            onPressed: () => Navigator.of(context).pushNamed(BarcodeForm.route),
+          child: ElevatedButton.icon(
+            icon: const Icon(Icons.add, color: Colors.white),
+            label: const Text('Add new barcode'),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+            onPressed: () =>
+                Navigator.of(context).pushNamed(BarcodeForm.route),
           ),
         ),
         Row(
           children: [
             Text('Groups', style: subtitle),
-            FlatButton.icon(
-              icon: Icon(
-                Icons.add,
-                color: Colors.green[700],
-              ),
+            TextButton.icon(
+              icon: Icon(Icons.add, color: Colors.green[700]),
               label: Text(
                 'Add new group',
-                style: Theme.of(context).textTheme.bodyText2,
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
-              onPressed: () {
-                Navigator.of(context).pushNamed(GroupForm.route);
-              },
-            )
+              onPressed: () =>
+                  Navigator.of(context).pushNamed(GroupForm.route),
+            ),
           ],
         ),
         Consumer<GroupProvider>(
@@ -69,11 +63,11 @@ class HomepageBody extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(height: kDefaultPadding * 2),
+        const SizedBox(height: kDefaultPadding * 2),
         Text('Recently used', style: subtitle),
         Consumer<RecentBarcodeProvider>(
           builder: (ctx, recentProvider, _) =>
-              recentProvider.barcodes.length > 0
+              recentProvider.barcodes.isNotEmpty
                   ? SizedBox(
                       height: 180,
                       child: ListView.builder(
@@ -89,30 +83,26 @@ class HomepageBody extends StatelessWidget {
                         ),
                       ),
                     )
-                  : Text('No recent barcodes to show'),
+                  : const Text('No recent barcodes to show'),
         ),
-        SizedBox(height: kDefaultPadding * 2),
+        const SizedBox(height: kDefaultPadding * 2),
         Row(
           children: [
             Text('Tags', style: subtitle),
-            FlatButton.icon(
-              icon: Icon(
-                Icons.add,
-                color: Colors.green[700],
-              ),
+            TextButton.icon(
+              icon: Icon(Icons.add, color: Colors.green[700]),
               label: Text(
                 'Add new tag',
-                style: Theme.of(context).textTheme.bodyText2,
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
-              onPressed: () {
-                Navigator.of(context).pushNamed(TagForm.route);
-              },
-            )
+              onPressed: () => Navigator.of(context).pushNamed(TagForm.route),
+            ),
           ],
         ),
         Consumer<TagProvider>(
-            builder: (context, tagProvider, _) =>
-                TagViewBody(tags: tagProvider.tags, readOnly: true))
+          builder: (context, tagProvider, _) =>
+              TagViewBody(tags: tagProvider.tags, readOnly: true),
+        ),
       ],
     );
   }

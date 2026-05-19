@@ -9,28 +9,27 @@ import 'package:flutter/material.dart';
 
 class TagProvider with ChangeNotifier {
   List<Tag> tags = [];
-  StreamSubscription subs;
+  StreamSubscription<List<Tag>>? subs;
 
   TagProvider({bool autoload = true}) {
     if (autoload) load();
   }
 
   void load() {
-    if (subs == null)
-      subs = BarcodeService.streamTags().listen((snap) {
-        tags = snap;
-        notifyListeners();
-      });
+    subs ??= BarcodeService.streamTags().listen((snap) {
+      tags = snap;
+      notifyListeners();
+    });
   }
 
   Future<void> saveToLocal() async {
     final list = tags.map((b) => b.toJson()).toList();
     final jsonStr = json.encode(list);
-    Prefs().instance.setString(LOCALSTORE_TAGS, jsonStr);
+    await Prefs().instance?.setString(LOCALSTORE_TAGS, jsonStr);
   }
 
   Future<void> close() async {
-    if (subs != null) await subs.cancel();
+    await subs?.cancel();
     subs = null;
     tags = [];
     notifyListeners();

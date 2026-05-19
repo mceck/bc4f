@@ -11,7 +11,7 @@ class Prefs {
     return _singleton;
   }
 
-  SharedPreferences _shared;
+  SharedPreferences? _shared;
 
-  SharedPreferences get instance => _shared;
+  SharedPreferences? get instance => _shared;
 }

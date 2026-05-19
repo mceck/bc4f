@@ -5,10 +5,7 @@ import 'package:bc4f/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class SearchBody extends StatelessWidget {
-  const SearchBody({
-    Key key,
-    @required this.barcodes,
-  }) : super(key: key);
+  const SearchBody({super.key, required this.barcodes});
 
   final List<Barcode> barcodes;
 
@@ -17,7 +14,7 @@ class SearchBody extends StatelessWidget {
     return GridView.builder(
       shrinkWrap: true,
       primary: false,
-      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
         childAspectRatio: kDefaultGridCellAspectRatio,
         maxCrossAxisExtent: kDefaultGridMaxExtent,
         crossAxisSpacing: kDefaultPadding,
